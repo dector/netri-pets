@@ -1,1 +1,1 @@
-This is simple Petri Net editor & simulator.
+This is Petri Net editor & simulator.
