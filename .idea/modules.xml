@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/petri-net/petri-net.iml" filepath="$PROJECT_DIR$/petri-net/petri-net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/petri-net-editor/petri-net-editor.iml" filepath="$PROJECT_DIR$/petri-net-editor/petri-net-editor.iml" />
     </modules>
   </component>
 </project>
