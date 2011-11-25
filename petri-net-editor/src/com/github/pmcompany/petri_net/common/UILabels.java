@@ -40,6 +40,8 @@ package com.github.pmcompany.petri_net.common;
 public final class UILabels {
     public static final String PROJECT_NAME = "PETRI NETS";
 
+    public static final String DEFAULT_FILENAME = "Unnamed";
+
     public static final String MENU_FILE = "File";
     public static final String MENU_CREATE = "New";
     public static final String MENU_QUIT = "Quit";

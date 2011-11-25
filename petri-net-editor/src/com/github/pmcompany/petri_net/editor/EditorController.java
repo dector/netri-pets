@@ -31,6 +31,8 @@
 
 package com.github.pmcompany.petri_net.editor;
 
+import com.github.pmcompany.petri_net.common.UILabels;
+import com.github.pmcompany.petri_net.editor.bars.ElementsBar;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
 
 import javax.swing.*;
@@ -49,26 +51,30 @@ public class EditorController {
     /** Singletone instance */
     private static EditorController instance;
 
-    /** Managed frame */
-    private JFrame frame;
+    /** Managed tabbed pane */
+    private JTabbedPane pane;
+
     /** List of opened P/T nets */
     private List<GridPanel> gridPanelsList;
+
+    private EditorTool tool;
 
     /**
      * Create new instance
      */
     private EditorController() {
         gridPanelsList = new ArrayList<GridPanel>();
+        tool = EditorTool.POINTER;
     }
 
     /**
-     * Create new instance and connect it with frame
+     * Create new instance and connect it with tabbed pane
      *
-     * @param frame managed frame
+     * @param pane managed tabbed pane
      */
-    private EditorController(JFrame frame) {
+    private EditorController(JTabbedPane pane) {
         this();
-        this.frame = frame;
+        this.pane = pane;
     }
 
     /**
@@ -85,13 +91,13 @@ public class EditorController {
     }
 
     /**
-     * Creates new controller instance and connect it with frame
+     * Creates new controller instance and connect it with tabbed pane
      *
-     * @param frame managed frame
+     * @param pane managed tabbed pane
      * @return new instance
      */
-    public static EditorController newInstance(JFrame frame) {
-        instance = new EditorController(frame);
+    public static EditorController newInstance(JTabbedPane pane) {
+        instance = new EditorController(pane);
 
         return instance;
     }
@@ -100,20 +106,23 @@ public class EditorController {
      * Create new P/T net
      */
     public void createNewFile() {
-        GridPanel gp = new GridPanel(frame.getSize());
+        GridPanel gp = new GridPanel(pane.getSize());
         gridPanelsList.add(gp);
 
         //todo: Use Tab Panel, Luke!
-        frame.add(gp);
-        frame.addComponentListener(new ComponentAdapter() {
+        pane.addTab(UILabels.DEFAULT_FILENAME, gp);
+        pane.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 for (GridPanel panel : gridPanelsList) {
-                    panel.setSize(frame.getSize());
+                    panel.setSize(pane.getSize());
                     panel.repaint();
                 }
             }
         });
-        frame.pack();
     }
+
+//    public void switchTool(EditorTool tool) {
+//        this.tool = tool;
+//    }
 }

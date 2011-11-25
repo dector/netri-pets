@@ -32,10 +32,13 @@
 package com.github.pmcompany.petri_net.editor.frames;
 
 import com.github.pmcompany.petri_net.editor.EditorController;
+import com.github.pmcompany.petri_net.editor.bars.ElementsBar;
 import com.github.pmcompany.petri_net.editor.menu.MainMenuBar;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
 
 import javax.swing.*;
+import java.awt.*;
+
 import static com.github.pmcompany.petri_net.common.UILabels.*;
 
 /**
@@ -50,13 +53,15 @@ public class EditorFrame extends JFrame {
      */
     EditorController controller;
 
+    JTabbedPane tabbedPane;
+
     /**
      * Create new instance
      */
     public EditorFrame() {
-        controller = EditorController.newInstance(this);
-
         buildGUI();
+
+        controller = EditorController.newInstance(tabbedPane);
     }
 
     /**
@@ -67,9 +72,19 @@ public class EditorFrame extends JFrame {
         //todo: fixme
         setSize(640, 480);
         setTitle(PROJECT_NAME);
+        setLayout(new BorderLayout());
 
         MainMenuBar menuBar = new MainMenuBar();
         setJMenuBar(menuBar);
+
+//        ElementsBar bar = new ElementsBar();
+//        add(bar, BorderLayout.NORTH);
+
+        tabbedPane = new JTabbedPane();
+        tabbedPane.setPreferredSize(getSize());
+        add(tabbedPane);
+
+        pack();
     }
 
 
