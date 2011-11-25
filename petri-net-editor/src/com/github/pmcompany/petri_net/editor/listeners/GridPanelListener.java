@@ -32,14 +32,9 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
         switch (controller.getSelectedTool()) {
             case POINTER: {
                 GraphicsElement element = gridPanel.getElementAt(e.getX(), e.getY());
+                boolean multiselectEnabled = e.isShiftDown();
 
-                boolean modifierPressed = e.isShiftDown();
-
-                if (element != null) {
-                    gridPanel.selectElement(element, modifierPressed);
-                } else {
-                    gridPanel.unselectAllElements();
-                }
+                gridPanel.selectElement(element, multiselectEnabled);       // element == null is NORMAL !
             } break;
             case PLACE: {
                 gridPanel.addElement(PTNetElements.PLACE, e.getX(), e.getY());

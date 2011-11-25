@@ -246,14 +246,20 @@ public class GridPanel extends JPanel {
     }
 
     public void selectElement(GraphicsElement element, boolean multiselect) {
-        if (multiselect) {
-            if (selectedElements.contains(element)) {
-                unselectElement(element);
+        if (element != null) {
+            if (multiselect) {
+                if (selectedElements.contains(element)) {
+                    unselectElement(element);
+                } else {
+                    selectAnotherElement(element);
+                }
             } else {
-                selectAnotherElement(element);
+                selectOneElement(element);
             }
         } else {
-            selectOneElement(element);
+            if (! multiselect) {
+                unselectAllElements();
+            }
         }
     }
 
@@ -265,7 +271,7 @@ public class GridPanel extends JPanel {
         selectedElements.remove(element);
     }
 
-    public void unselectAllElements() {
+    private void unselectAllElements() {
         selectedElements.clear();
     }
 }
