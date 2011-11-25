@@ -5,7 +5,6 @@ import com.github.pmcompany.petri_net.editor.elements.GraphicsElement;
 import com.github.pmcompany.petri_net.editor.elements.PTNetElements;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
 
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,65 +27,42 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
         dragging = false;
     }
 
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {}
+
+    public void mousePressed(MouseEvent e) {
+        boolean multiselectEnabled = isMultiselectEnabled(e);
+
         switch (controller.getSelectedTool()) {
             case POINTER: {
                 GraphicsElement element = gridPanel.getElementAt(e.getX(), e.getY());
-                boolean multiselectEnabled = e.isShiftDown();
 
                 gridPanel.selectElement(element, multiselectEnabled);       // element == null is NORMAL !
             } break;
+
             case PLACE: {
-                gridPanel.addElement(PTNetElements.PLACE, e.getX(), e.getY());
+                gridPanel.addAndSelectElement(PTNetElements.PLACE, e.getX(), e.getY(), multiselectEnabled);
             } break;
+
             case TRANSITION: {
-                gridPanel.addElement(PTNetElements.TRANSITION, e.getX(), e.getY());
+                gridPanel.addAndSelectElement(PTNetElements.TRANSITION, e.getX(), e.getY(), multiselectEnabled);
             } break;
+
             case MOMENTAL_TRANSITION: {
-                gridPanel.addElement(PTNetElements.MOMENTAL_TRANSITION, e.getX(), e.getY());
+                gridPanel.addAndSelectElement(PTNetElements.MOMENTAL_TRANSITION, e.getX(), e.getY(), multiselectEnabled);
             } break;
         }
+
+        x0 = e.getX();
+        y0 = e.getY();
 
         controller.updateView();
     }
 
-    public void mousePressed(MouseEvent e) {
-//        switch (controller.getSelectedTool()) {
-//            case POINTER: {
-//                GraphicsElement element = gridPanel.getElementAt(e.getX(), e.getY());
-//
-//                if (element != null) {
-//                    gridPanel.startDragElements();
-//                    dragging = true;
-//
-//                    x0 = e.getX();
-//                    y0 = e.getY();
-//
-//                    System.out.printf("Start dragging %s%n", element.getType());
-//                }
-//            } break;
-//            case PLACE: {
-//                gridPanel.addElement(PTNetElements.PLACE, e.getX(), e.getY());
-//            } break;
-//            case TRANSITION: {
-//                gridPanel.addElement(PTNetElements.TRANSITION, e.getX(), e.getY());
-//            } break;
-//            case MOMENTAL_TRANSITION: {
-//                gridPanel.addElement(PTNetElements.MOMENTAL_TRANSITION, e.getX(), e.getY());
-//            } break;
-//        }
-//
-//        controller.updateView();
-    }
-
     public void mouseReleased(MouseEvent e) {
-        if (dragging) {
-            gridPanel.stopDragElements();
-            dragging = false;
-
-            System.out.printf("Stop dragging%n");
-        }
-
+                if (dragging) {
+                    gridPanel.stopDragElements();
+                    dragging = false;
+                }
         controller.updateView();
     }
 
@@ -95,36 +71,30 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
     public void mouseExited(MouseEvent e) {}
 
     public void mouseDragged(MouseEvent e) {
-        switch (controller.getSelectedTool()) {
-            case POINTER: {
-                if (dragging) {
-                    int dx = e.getX() - x0;
-                    int dy = e.getY() - y0;
+        int x = e.getX();
+        int y = e.getY();
 
-                    System.out.printf("Dragging %d, %d%n", dx, dy);
+        GraphicsElement element = gridPanel.getElementAt(e.getX(), e.getY());
+        boolean selected = gridPanel.isSelected(element);
 
-                    gridPanel.dragElements(dx, dy);
-                } else {
-                    System.out.printf("NOT Dragging%n");
-
-                }
-            } break;
+        if (selected && ! dragging) {
+            gridPanel.startDragElements();
+            dragging = true;
         }
+
+        int dx = x - x0;
+        x0 = x;
+        int dy = y - y0;
+        y0 = y;
+
+        gridPanel.dragElements(dx, dy);
 
         controller.updateView();
     }
 
-    public void mouseMoved(MouseEvent e) {
-        switch (controller.getSelectedTool()) {
-            case POINTER: {
-            } break;
-            case PLACE: {
-                if (! dragging) {
-//                    gridPanel.positionPlace(e.getX(), e.getY());
-                }
-            } break;
-        }
+    public void mouseMoved(MouseEvent e) {}
 
-        controller.updateView();
+    private boolean isMultiselectEnabled(MouseEvent e) {
+        return e.isShiftDown();
     }
 }

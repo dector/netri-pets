@@ -39,9 +39,9 @@ import com.github.pmcompany.petri_net.editor.listeners.GridPanelListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 /**
  * JPanel which draws P/T net components
@@ -53,7 +53,7 @@ public class GridPanel extends JPanel {
     /** Grid parameters */
     private Grid grid;
 
-    private List<GraphicsElement> elements;
+    private List<GraphicsElement> addedElements;
 
     private List<GraphicsElement> draggedElements;
     private List<GraphicsElement> selectedElements;
@@ -66,7 +66,7 @@ public class GridPanel extends JPanel {
      * @param dimension panels's size
      */
     public GridPanel(Dimension dimension) {
-        elements = new ArrayList<GraphicsElement>();
+        addedElements = new ArrayList<GraphicsElement>();
         draggedElements = new ArrayList<GraphicsElement>();
         selectedElements = new ArrayList<GraphicsElement>();
 
@@ -106,11 +106,11 @@ public class GridPanel extends JPanel {
         int elementY;
         boolean dragging;
         boolean selected;
-        for (GraphicsElement currElement : elements) {
+        for (GraphicsElement currElement : addedElements) {
             elementX = currElement.getX();
             elementY = currElement.getY();
-            dragging = draggedElements.contains(currElement);
-            selected = selectedElements.contains(currElement);
+            dragging = isDragging(currElement);
+            selected = isSelected(currElement);
 
             switch (currElement.getType()) {
                 case PLACE: {
@@ -172,6 +172,7 @@ public class GridPanel extends JPanel {
                     g.drawRect(elementX, elementY, GraphicsElement.MOMENTAL_TRANSITION_WIDTH, GraphicsElement.MOMENTAL_TRANSITION_HEIGHT);
                 } break;
             }
+
         }
         // ========== [END] DRAW P/T NET
 
@@ -187,14 +188,25 @@ public class GridPanel extends JPanel {
         return getSize();
     }
 
+    public void addElement(GraphicsElement element) {
+        addedElements.add(element);
+    }
+
+    public void addAndSelectElement(PTNetElements type, int x, int y, boolean multiselect) {
+        System.out.printf("Adding and selecting %s at %d:%d%n", type, x, y);
+        GraphicsElement element = new GraphicsElement(type, x, y);
+        addElement(element);
+        selectElement(element, multiselect);
+    }
+
     public void addElement(PTNetElements type, int x, int y) {
-        elements.add(new GraphicsElement(type, x, y));
+        addedElements.add(new GraphicsElement(type, x, y));
     }
 
     public GraphicsElement getElementAt(int x, int y) {
         GraphicsElement element = null;
 
-        Iterator<GraphicsElement> iterator = elements.iterator();
+        ListIterator<GraphicsElement> iterator = addedElements.listIterator(addedElements.size());
 
         GraphicsElement currElement;
         int borderLeft;
@@ -202,8 +214,8 @@ public class GridPanel extends JPanel {
         int borderTop;
         int borderBottom;
 
-        while (element == null && iterator.hasNext()) {
-            currElement = iterator.next();
+        while (element == null && iterator.hasPrevious()) {
+            currElement = iterator.previous();
 
             borderLeft = currElement.getX() - currElement.getWidth()/2;
             borderRight = currElement.getX() + currElement.getWidth()/2;
@@ -215,18 +227,11 @@ public class GridPanel extends JPanel {
             }
         }
 
-        System.out.printf("Element under mouse pointer (%d:%d): %s%n", x, y, (element != null) ? element.getType() : "N/a");
-
         return element;
     }
 
     public void startDragElements() {
         draggedElements.addAll(selectedElements);
-
-        for (GraphicsElement element : draggedElements) {
-            element.setPrevX(element.getX());
-            element.setPrevY(element.getY());
-        }
     }
 
     public void stopDragElements() {
@@ -248,7 +253,7 @@ public class GridPanel extends JPanel {
     public void selectElement(GraphicsElement element, boolean multiselect) {
         if (element != null) {
             if (multiselect) {
-                if (selectedElements.contains(element)) {
+                if (isSelected(element)) {
                     unselectElement(element);
                 } else {
                     selectAnotherElement(element);
@@ -273,5 +278,17 @@ public class GridPanel extends JPanel {
 
     private void unselectAllElements() {
         selectedElements.clear();
+    }
+
+    public boolean isAdded(GraphicsElement element) {
+        return addedElements.contains(element);
+    }
+
+    public boolean isSelected(GraphicsElement element) {
+        return selectedElements.contains(element);
+    }
+
+    public boolean isDragging(GraphicsElement element) {
+        return draggedElements.contains(element);
     }
 }

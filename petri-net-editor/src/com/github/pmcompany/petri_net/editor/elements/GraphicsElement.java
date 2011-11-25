@@ -12,22 +12,15 @@ public class GraphicsElement {
     public static final int MOMENTAL_TRANSITION_WIDTH = 15;
     public static final int MOMENTAL_TRANSITION_HEIGHT = 50;
 
-    public static int SELECTION_BORDER_WIDTH = PLACE_SIZE / 5;
-
     private PTNetElements type;
     private int x;
     private int y;
-
-    private int prevX;
-    private int prevY;
 
     public GraphicsElement(PTNetElements type, int x, int y) {
         this.type = type;
 
         this.x = x;
-        this.prevX = x;
         this.y = y;
-        this.prevY = y;
     }
 
     public int getX() {
@@ -72,21 +65,5 @@ public class GraphicsElement {
         }
 
         return height;
-    }
-
-    public int getPrevX() {
-        return prevX;
-    }
-
-    public void setPrevX(int prevX) {
-        this.prevX = prevX;
-    }
-
-    public int getPrevY() {
-        return prevY;
-    }
-
-    public void setPrevY(int prevY) {
-        this.prevY = prevY;
     }
 }
