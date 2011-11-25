@@ -38,9 +38,8 @@ import com.github.pmcompany.petri_net.editor.elements.PTNetElements;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelListener;
 
 import javax.swing.*;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -57,6 +56,9 @@ public class GridPanel extends JPanel {
     private List<GraphicsElement> elements;
 
     private List<GraphicsElement> draggedElements;
+    private List<GraphicsElement> selectedElements;
+
+    private Stroke elementStroke;
 
     /**
      * Create new instance with determined size
@@ -66,11 +68,16 @@ public class GridPanel extends JPanel {
     public GridPanel(Dimension dimension) {
         elements = new ArrayList<GraphicsElement>();
         draggedElements = new ArrayList<GraphicsElement>();
+        selectedElements = new ArrayList<GraphicsElement>();
 
         grid = new Grid();
         setSize(dimension);
 
-        addMouseListener(new GridPanelListener(this));
+        elementStroke = new BasicStroke(Settings.ELEMENT_BORDER_WIDTH);
+
+        GridPanelListener gpl = new GridPanelListener(this);
+        addMouseListener(gpl);
+        addMouseMotionListener(gpl);
     }
 
     /**
@@ -92,22 +99,84 @@ public class GridPanel extends JPanel {
             }
         }
 
+        // ========== [BEGIN] DRAW P/T NET
+        g.setStroke(elementStroke);
+
         int elementX;
         int elementY;
+        boolean dragging;
+        boolean selected;
         for (GraphicsElement currElement : elements) {
+            elementX = currElement.getX();
+            elementY = currElement.getY();
+            dragging = draggedElements.contains(currElement);
+            selected = selectedElements.contains(currElement);
+
             switch (currElement.getType()) {
                 case PLACE: {
-
-                    elementX = currElement.getX() - GraphicsElement.PLACE_SIZE/2;
-                    elementY = currElement.getY() - GraphicsElement.PLACE_SIZE/2;
+                    elementX -= GraphicsElement.PLACE_SIZE/2;
+                    elementY -= GraphicsElement.PLACE_SIZE/2;
 
                     g.setColor(Settings.PLACE_FILL_COLOR);
+
+                    if (selected) {
+                        g.setColor(Settings.SELECTION_FILL_COLOR);
+                    }
+
                     g.fillOval(elementX, elementY, GraphicsElement.PLACE_SIZE, GraphicsElement.PLACE_SIZE);
-                    g.setColor(Settings.PLACE_BORDER_COLOR);
+
+//                    if (selected) {
+//                        g.setColor(Settings.SELECTION_BORDER_COLOR);
+//
+//                        Polygon p;
+//                        p = new Polygon();
+//                        p.addPoint();
+//
+//                        g.drawPolygon();
+//                    }
+
+                    if (dragging) {
+                        g.setColor(Settings.DRAGGING_PLACE_BORDER_COLOR);
+                    } else {
+                        g.setColor(Settings.PLACE_BORDER_COLOR);
+                    }
+
                     g.drawOval(elementX, elementY, GraphicsElement.PLACE_SIZE, GraphicsElement.PLACE_SIZE);
-                }
+                } break;
+                case TRANSITION: {
+                    elementX -= GraphicsElement.TRANSITION_WIDTH/2;
+                    elementY -= GraphicsElement.TRANSITION_HEIGHT/2;
+
+                    g.setColor(Settings.TRANSITION_FILL_COLOR);
+                    g.fillRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
+
+                    if (dragging) {
+                        g.setColor(Settings.DRAGGING_TRANSITION_BORDER_COLOR);
+                    } else {
+                        g.setColor(Settings.TRANSITION_BORDER_COLOR);
+                    }
+
+                    g.drawRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
+                } break;
+                case MOMENTAL_TRANSITION: {
+                    elementX -= GraphicsElement.TRANSITION_WIDTH/2;
+                    elementY -= GraphicsElement.TRANSITION_HEIGHT/2;
+
+                    g.setColor(Settings.MOMENTAL_TRANSITION_FILL_COLOR);
+                    g.fillRect(elementX, elementY, GraphicsElement.MOMENTAL_TRANSITION_WIDTH, GraphicsElement.MOMENTAL_TRANSITION_HEIGHT);
+
+                    if (dragging) {
+                        g.setColor(Settings.DRAGGING_MOMENTAL_TRANSITION_BORDER_COLOR);
+                    } else {
+                        g.setColor(Settings.MOMENTAL_TRANSITION_BORDER_COLOR);
+                    }
+
+                    g.drawRect(elementX, elementY, GraphicsElement.MOMENTAL_TRANSITION_WIDTH, GraphicsElement.MOMENTAL_TRANSITION_HEIGHT);
+                } break;
             }
         }
+        // ========== [END] DRAW P/T NET
+
     }
 
     /**
@@ -122,5 +191,81 @@ public class GridPanel extends JPanel {
 
     public void addElement(PTNetElements type, int x, int y) {
         elements.add(new GraphicsElement(type, x, y));
+    }
+
+    public GraphicsElement getElementAt(int x, int y) {
+        GraphicsElement element = null;
+
+        Iterator<GraphicsElement> iterator = elements.iterator();
+
+        GraphicsElement currElement;
+        int borderLeft;
+        int borderRight;
+        int borderTop;
+        int borderBottom;
+
+        while (element == null && iterator.hasNext()) {
+            currElement = iterator.next();
+
+            borderLeft = currElement.getX() - currElement.getWidth()/2;
+            borderRight = currElement.getX() + currElement.getWidth()/2;
+            borderBottom = currElement.getY() - currElement.getHeight()/2;
+            borderTop = currElement.getY() + currElement.getHeight()/2;
+
+            if (borderLeft <= x && x <= borderRight && borderBottom <= y && y <= borderTop) {
+                element = currElement;
+            }
+        }
+
+        return element;
+    }
+
+    public void startDragElements() {
+        draggedElements.addAll(selectedElements);
+
+        for (GraphicsElement element : draggedElements) {
+            element.setPrevX(element.getX());
+            element.setPrevY(element.getY());
+        }
+    }
+
+    public void stopDragElements() {
+        draggedElements.clear();
+    }
+
+    public void dragElements(int dx, int dy) {
+        for (GraphicsElement element : draggedElements) {
+            element.setX(element.getX() + dx);
+            element.setY(element.getY() + dy);
+        }
+    }
+
+    private void selectOneElement(GraphicsElement element) {
+        unselectAllElements();
+        selectAnotherElement(element);
+    }
+
+    public void selectElement(GraphicsElement element, boolean multiselect) {
+        if (multiselect) {
+            if (selectedElements.contains(element)) {
+                unselectElement(element);
+            } else {
+                selectAnotherElement(element);
+            }
+        } else {
+            selectOneElement(element);
+        }
+    }
+
+    private void selectAnotherElement(GraphicsElement element) {
+        selectedElements.add(element);
+    }
+
+    private void unselectElement(GraphicsElement element) {
+        selectedElements.remove(element);
+    }
+
+    public void unselectAllElements() {
+        selectedElements.clear();
     }
 }

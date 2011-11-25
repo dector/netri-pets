@@ -45,6 +45,20 @@ public class Settings {
     /** Grid line width */
     public static int GRID_WIDTH = 1;
 
+    public static float ELEMENT_BORDER_WIDTH = 2.5f;
+
+//    public static Color SELECTION_BORDER_COLOR = Color.BLUE;
+    public static Color SELECTION_FILL_COLOR = Color.LIGHT_GRAY;
+
     public static Color PLACE_FILL_COLOR = Color.WHITE;
     public static Color PLACE_BORDER_COLOR = Color.BLACK;
+    public static Color DRAGGING_PLACE_BORDER_COLOR = Color.RED;
+
+    public static Color TRANSITION_FILL_COLOR = Color.WHITE;
+    public static Color TRANSITION_BORDER_COLOR = Color.BLACK;
+    public static Color DRAGGING_TRANSITION_BORDER_COLOR = Color.RED;
+
+    public static Color MOMENTAL_TRANSITION_FILL_COLOR = Color.BLACK;
+    public static Color MOMENTAL_TRANSITION_BORDER_COLOR = Color.BLACK;
+    public static Color DRAGGING_MOMENTAL_TRANSITION_BORDER_COLOR = Color.RED;
 }

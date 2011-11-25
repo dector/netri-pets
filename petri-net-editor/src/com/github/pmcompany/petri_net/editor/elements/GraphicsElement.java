@@ -5,23 +5,29 @@ package com.github.pmcompany.petri_net.editor.elements;
  */
 public class GraphicsElement {
     public static final int PLACE_SIZE = 50;
-    public static final float TRANSACTION_PROPORTION = 0.75f;
+
+    public static final int TRANSITION_WIDTH = 30;
+    public static final int TRANSITION_HEIGHT = 50;
+
+    public static final int MOMENTAL_TRANSITION_WIDTH = 15;
+    public static final int MOMENTAL_TRANSITION_HEIGHT = 50;
+
+    public static int SELECTION_BORDER_WIDTH = PLACE_SIZE / 5;
 
     private PTNetElements type;
     private int x;
     private int y;
 
-    private boolean dragging;
-
-    public GraphicsElement(PTNetElements type, int x, int y, boolean dragging) {
-        this.type = type;
-        this.x = x;
-        this.y = y;
-        this.dragging = dragging;
-    }
+    private int prevX;
+    private int prevY;
 
     public GraphicsElement(PTNetElements type, int x, int y) {
-        this(type, x, y, false);
+        this.type = type;
+
+        this.x = x;
+        this.prevX = x;
+        this.y = y;
+        this.prevY = y;
     }
 
     public int getX() {
@@ -44,11 +50,43 @@ public class GraphicsElement {
         return type;
     }
 
-    public boolean isDragging() {
-        return dragging;
+    public int getWidth() {
+        int width = 0;
+
+        switch (type) {
+            case PLACE: width = PLACE_SIZE; break;
+            case TRANSITION: width = TRANSITION_WIDTH; break;
+            case MOMENTAL_TRANSITION: width = MOMENTAL_TRANSITION_WIDTH; break;
+        }
+
+        return width;
     }
 
-    public void setDragging(boolean dragging) {
-        this.dragging = dragging;
+    public int getHeight() {
+        int height = 0;
+
+        switch (type) {
+            case PLACE: height = PLACE_SIZE; break;
+            case TRANSITION: height = TRANSITION_HEIGHT; break;
+            case MOMENTAL_TRANSITION: height = MOMENTAL_TRANSITION_HEIGHT; break;
+        }
+
+        return height;
+    }
+
+    public int getPrevX() {
+        return prevX;
+    }
+
+    public void setPrevX(int prevX) {
+        this.prevX = prevX;
+    }
+
+    public int getPrevY() {
+        return prevY;
+    }
+
+    public void setPrevY(int prevY) {
+        this.prevY = prevY;
     }
 }
