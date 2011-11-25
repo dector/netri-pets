@@ -33,9 +33,16 @@ package com.github.pmcompany.petri_net.editor.panels;
 
 import com.github.pmcompany.petri_net.editor.Grid;
 import com.github.pmcompany.petri_net.editor.Settings;
+import com.github.pmcompany.petri_net.editor.elements.GraphicsElement;
+import com.github.pmcompany.petri_net.editor.elements.PTNetElements;
+import com.github.pmcompany.petri_net.editor.listeners.GridPanelListener;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * JPanel which draws P/T net components
@@ -45,7 +52,11 @@ import java.awt.*;
  */
 public class GridPanel extends JPanel {
     /** Grid parameters */
-    Grid grid;
+    private Grid grid;
+
+    private List<GraphicsElement> elements;
+
+    private List<GraphicsElement> draggedElements;
 
     /**
      * Create new instance with determined size
@@ -53,8 +64,13 @@ public class GridPanel extends JPanel {
      * @param dimension panels's size
      */
     public GridPanel(Dimension dimension) {
+        elements = new ArrayList<GraphicsElement>();
+        draggedElements = new ArrayList<GraphicsElement>();
+
         grid = new Grid();
         setSize(dimension);
+
+        addMouseListener(new GridPanelListener(this));
     }
 
     /**
@@ -68,10 +84,28 @@ public class GridPanel extends JPanel {
 
         Graphics2D g = (Graphics2D) graphics;
 
+        //drawGrid
         g.setColor(Settings.GRID_COLOR);
         for (int x = grid.getLeftCoord(); x < getWidth(); x += grid.getStepX()) {
             for (int y = grid.getTopCoord(); y < getHeight(); y += grid.getStepY()) {
                 g.drawRect(x, y, Settings.GRID_WIDTH, Settings.GRID_WIDTH);
+            }
+        }
+
+        int elementX;
+        int elementY;
+        for (GraphicsElement currElement : elements) {
+            switch (currElement.getType()) {
+                case PLACE: {
+
+                    elementX = currElement.getX() - GraphicsElement.PLACE_SIZE/2;
+                    elementY = currElement.getY() - GraphicsElement.PLACE_SIZE/2;
+
+                    g.setColor(Settings.PLACE_FILL_COLOR);
+                    g.fillOval(elementX, elementY, GraphicsElement.PLACE_SIZE, GraphicsElement.PLACE_SIZE);
+                    g.setColor(Settings.PLACE_BORDER_COLOR);
+                    g.drawOval(elementX, elementY, GraphicsElement.PLACE_SIZE, GraphicsElement.PLACE_SIZE);
+                }
             }
         }
     }
@@ -84,5 +118,9 @@ public class GridPanel extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         return getSize();
+    }
+
+    public void addElement(PTNetElements type, int x, int y) {
+        elements.add(new GraphicsElement(type, x, y));
     }
 }

@@ -44,4 +44,7 @@ public class Settings {
     public static Color GRID_COLOR = Color.GRAY;
     /** Grid line width */
     public static int GRID_WIDTH = 1;
+
+    public static Color PLACE_FILL_COLOR = Color.WHITE;
+    public static Color PLACE_BORDER_COLOR = Color.BLACK;
 }

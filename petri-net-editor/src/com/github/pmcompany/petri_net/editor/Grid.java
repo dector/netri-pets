@@ -39,7 +39,7 @@ package com.github.pmcompany.petri_net.editor;
  */
 public class Grid {
     /** Default distance between grid nodes */
-    public static final int DEFAULT_STEP = 10;
+    public static final int DEFAULT_STEP = 15;
     /** Default padding for grid */
     public static final int DEFAULT_COORD = DEFAULT_STEP/2;
 

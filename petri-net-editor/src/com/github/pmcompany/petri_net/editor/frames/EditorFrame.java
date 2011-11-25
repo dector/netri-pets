@@ -77,8 +77,8 @@ public class EditorFrame extends JFrame {
         MainMenuBar menuBar = new MainMenuBar();
         setJMenuBar(menuBar);
 
-//        ElementsBar bar = new ElementsBar();
-//        add(bar, BorderLayout.NORTH);
+        ElementsBar bar = new ElementsBar();
+        add(bar, BorderLayout.NORTH);
 
         tabbedPane = new JTabbedPane();
         tabbedPane.setPreferredSize(getSize());

@@ -109,7 +109,6 @@ public class EditorController {
         GridPanel gp = new GridPanel(pane.getSize());
         gridPanelsList.add(gp);
 
-        //todo: Use Tab Panel, Luke!
         pane.addTab(UILabels.DEFAULT_FILENAME, gp);
         pane.addComponentListener(new ComponentAdapter() {
             @Override
@@ -122,7 +121,15 @@ public class EditorController {
         });
     }
 
-//    public void switchTool(EditorTool tool) {
-//        this.tool = tool;
-//    }
+    public void switchTool(EditorTool tool) {
+        this.tool = tool;
+    }
+
+    public EditorTool getSelectedTool() {
+        return tool;
+    }
+
+    public void updateView() {
+        pane.repaint();
+    }
 }
