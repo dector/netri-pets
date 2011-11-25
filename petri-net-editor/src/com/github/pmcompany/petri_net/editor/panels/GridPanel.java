@@ -117,23 +117,13 @@ public class GridPanel extends JPanel {
                     elementX -= GraphicsElement.PLACE_SIZE/2;
                     elementY -= GraphicsElement.PLACE_SIZE/2;
 
-                    g.setColor(Settings.PLACE_FILL_COLOR);
-
                     if (selected) {
                         g.setColor(Settings.SELECTION_FILL_COLOR);
+                    } else {
+                        g.setColor(Settings.PLACE_FILL_COLOR);
                     }
 
                     g.fillOval(elementX, elementY, GraphicsElement.PLACE_SIZE, GraphicsElement.PLACE_SIZE);
-
-//                    if (selected) {
-//                        g.setColor(Settings.SELECTION_BORDER_COLOR);
-//
-//                        Polygon p;
-//                        p = new Polygon();
-//                        p.addPoint();
-//
-//                        g.drawPolygon();
-//                    }
 
                     if (dragging) {
                         g.setColor(Settings.DRAGGING_PLACE_BORDER_COLOR);
@@ -147,7 +137,11 @@ public class GridPanel extends JPanel {
                     elementX -= GraphicsElement.TRANSITION_WIDTH/2;
                     elementY -= GraphicsElement.TRANSITION_HEIGHT/2;
 
-                    g.setColor(Settings.TRANSITION_FILL_COLOR);
+                    if (selected) {
+                        g.setColor(Settings.SELECTION_FILL_COLOR);
+                    } else {
+                        g.setColor(Settings.TRANSITION_FILL_COLOR);
+                    }
                     g.fillRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
 
                     if (dragging) {
@@ -159,10 +153,14 @@ public class GridPanel extends JPanel {
                     g.drawRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
                 } break;
                 case MOMENTAL_TRANSITION: {
-                    elementX -= GraphicsElement.TRANSITION_WIDTH/2;
-                    elementY -= GraphicsElement.TRANSITION_HEIGHT/2;
+                    elementX -= GraphicsElement.MOMENTAL_TRANSITION_WIDTH/2;
+                    elementY -= GraphicsElement.MOMENTAL_TRANSITION_HEIGHT/2;
 
-                    g.setColor(Settings.MOMENTAL_TRANSITION_FILL_COLOR);
+                    if (selected) {
+                        g.setColor(Settings.SELECTION_FILL_COLOR);
+                    } else {
+                        g.setColor(Settings.MOMENTAL_TRANSITION_FILL_COLOR);
+                    }
                     g.fillRect(elementX, elementY, GraphicsElement.MOMENTAL_TRANSITION_WIDTH, GraphicsElement.MOMENTAL_TRANSITION_HEIGHT);
 
                     if (dragging) {
@@ -216,6 +214,8 @@ public class GridPanel extends JPanel {
                 element = currElement;
             }
         }
+
+        System.out.printf("Element under mouse pointer (%d:%d): %s%n", x, y, (element != null) ? element.getType() : "N/a");
 
         return element;
     }

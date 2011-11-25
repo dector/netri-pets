@@ -62,7 +62,6 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
 //                    x0 = e.getX();
 //                    y0 = e.getY();
 //
-//                    //todo: debug
 //                    System.out.printf("Start dragging %s%n", element.getType());
 //                }
 //            } break;
