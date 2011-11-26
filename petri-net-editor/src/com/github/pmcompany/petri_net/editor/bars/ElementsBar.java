@@ -4,11 +4,8 @@ import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.editor.EditorTool;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 /**
  * @author dector (dector9@gmail.com)
@@ -62,7 +59,7 @@ public class ElementsBar extends PalleteToolBar {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                EditorController.getInstance().switchTool(EditorTool.CONNECTION);
+                EditorController.getInstance().switchTool(EditorTool.STRAIGHT_CONNECTION);
                 setActiveButton((JToggleButton)e.getSource());
             }
         });

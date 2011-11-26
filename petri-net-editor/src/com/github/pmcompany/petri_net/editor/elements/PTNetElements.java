@@ -19,4 +19,24 @@ public enum PTNetElements {
 
         return sb.toString();
     }
+
+    public boolean isSimmilar(PTNetElements testedElement) {
+        boolean simmilar = false;
+
+        switch (this) {
+            case PLACE: {
+                if (testedElement == PLACE) {
+                    simmilar = true;
+                }
+            } break;
+
+            default: {
+                if (testedElement == TRANSITION || testedElement == MOMENTAL_TRANSITION) {
+                    simmilar = true;
+                }
+            }
+        }
+
+        return simmilar;
+    }
 }

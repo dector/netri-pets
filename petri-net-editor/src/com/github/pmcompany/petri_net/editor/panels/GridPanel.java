@@ -33,12 +33,15 @@ package com.github.pmcompany.petri_net.editor.panels;
 
 import com.github.pmcompany.petri_net.editor.Grid;
 import com.github.pmcompany.petri_net.editor.Settings;
-import com.github.pmcompany.petri_net.editor.elements.GraphicsElement;
-import com.github.pmcompany.petri_net.editor.elements.PTNetElements;
+import com.github.pmcompany.petri_net.editor.elements.*;
+import com.github.pmcompany.petri_net.editor.elements.Point;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelListener;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -58,7 +61,12 @@ public class GridPanel extends JPanel {
     private List<GraphicsElement> draggedElements;
     private List<GraphicsElement> selectedElements;
 
+    private List<Connection> connections;
+    private Connection currentConnection;
+    private Point currentConnectionEnd;
+
     private Stroke elementStroke;
+    private Stroke connectionStroke;
 
     /**
      * Create new instance with determined size
@@ -69,11 +77,13 @@ public class GridPanel extends JPanel {
         addedElements = new ArrayList<GraphicsElement>();
         draggedElements = new ArrayList<GraphicsElement>();
         selectedElements = new ArrayList<GraphicsElement>();
+        connections = new ArrayList<Connection>();
 
         grid = new Grid();
         setSize(dimension);
 
         elementStroke = new BasicStroke(Settings.ELEMENT_BORDER_WIDTH);
+        connectionStroke = new BasicStroke(Settings.CONNECTION_WIDTH);
 
         GridPanelListener gpl = new GridPanelListener(this);
         addMouseListener(gpl);
@@ -126,7 +136,7 @@ public class GridPanel extends JPanel {
                     g.fillOval(elementX, elementY, GraphicsElement.PLACE_SIZE, GraphicsElement.PLACE_SIZE);
 
                     if (dragging) {
-                        g.setColor(Settings.DRAGGING_PLACE_BORDER_COLOR);
+                        g.setColor(Settings.ELEMENT_DRAGGING_BORDER_COLOR);
                     } else {
                         g.setColor(Settings.PLACE_BORDER_COLOR);
                     }
@@ -145,7 +155,7 @@ public class GridPanel extends JPanel {
                     g.fillRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
 
                     if (dragging) {
-                        g.setColor(Settings.DRAGGING_TRANSITION_BORDER_COLOR);
+                        g.setColor(Settings.ELEMENT_DRAGGING_BORDER_COLOR);
                     } else {
                         g.setColor(Settings.TRANSITION_BORDER_COLOR);
                     }
@@ -164,7 +174,7 @@ public class GridPanel extends JPanel {
                     g.fillRect(elementX, elementY, GraphicsElement.MOMENTAL_TRANSITION_WIDTH, GraphicsElement.MOMENTAL_TRANSITION_HEIGHT);
 
                     if (dragging) {
-                        g.setColor(Settings.DRAGGING_MOMENTAL_TRANSITION_BORDER_COLOR);
+                        g.setColor(Settings.ELEMENT_DRAGGING_BORDER_COLOR);
                     } else {
                         g.setColor(Settings.MOMENTAL_TRANSITION_BORDER_COLOR);
                     }
@@ -174,8 +184,102 @@ public class GridPanel extends JPanel {
             }
 
         }
+
+        g.setStroke(connectionStroke);
+
+        for (Connection connection : connections) {
+            drawConnection(g, connection);
+        }
+
+        if (currentConnection != null) {
+            drawConnection(g, currentConnection, currentConnection.getStart(), currentConnectionEnd);
+        }
         // ========== [END] DRAW P/T NET
 
+    }
+
+    private void drawConnection(Graphics2D g, Connection connection) {
+        drawConnection(g, connection, connection.getStart(), connection.getEnd());
+    }
+
+    private void drawConnection(Graphics2D g, Connection connection, Point start, Point end) {
+        if (connection.getMiddlePoints() == null) {
+            PTNetElements elementType = connection.getFrom().getType();
+            if (elementType == PTNetElements.PLACE) {
+                g.setColor(Settings.PLACE_TRANSITION_CONNECTION_COLOR);
+            } else if (elementType == PTNetElements.TRANSITION || elementType == PTNetElements.MOMENTAL_TRANSITION) {
+                g.setColor(Settings.TRANSITION_PLACE_CONNECTION_COLOR);
+            }
+
+            Point[] points = createArrowPoints(connection, start, end);
+
+            if (points != null) {
+                int x0 = points[0].getX();
+                int y0 = points[0].getY();
+
+                int x1 = points[1].getX();
+                int y1 = points[1].getY();
+
+                g.drawLine(x0, y0, x1, y1);
+
+                double dx = x1 - x0;
+                double dy = y1 - y0;
+
+                double theta = Math.atan(dy / dx);
+
+//                g.setColor(Color.RED);
+//                g.drawLine(-300, 0, 300, 0);
+//                g.drawLine(0, -300, 0, 300);
+
+                Polygon p = createArrow(points);
+                g.translate(x1, y1);
+
+//                g.setColor(Color.BLUE);
+//                g.drawLine(-300, 0, 300, 0);
+//                g.drawLine(0, -300, 0, 300);
+
+                g.rotate(theta);
+
+//                g.setColor(Color.GREEN);
+//                g.drawLine(-300, 0, 300, 0);
+//                g.drawLine(0, -300, 0, 300);
+
+                g.translate(-x1, -y1);
+                g.drawPolygon(p);
+            }
+        } else {
+            System.out.println("MiddlePoints");
+        }
+    }
+
+    private Point[] createArrowPoints(Connection connection, Point start, Point end) {
+        Point[] p = null;
+
+        if (! connection.isInsideFromElement(end)) {
+            GraphicsElement from = connection.getFrom();
+            GraphicsElement to = connection.getTo();
+
+            p = from.getConnectionPointsWith(end, (to != null) ? to.getWidth() / 2 : 0);
+        }
+
+        return p;
+    }
+
+    private Polygon createArrow(Point[] points) {
+        Polygon arrow = new Polygon();
+
+        int x1 = points[1].getX();
+        int y1 = points[1].getY();
+
+        arrow.addPoint(x1 - Connection.ARROW_INNER_LENGTH, y1);
+        arrow.addPoint(x1 - Connection.ARROW_OUTER_LENGTH,
+                       (int)(y1 + Connection.ARROW_OUTER_LENGTH * Connection.ARROW_ANGLE_TAN));
+        arrow.addPoint(x1, y1);
+        arrow.addPoint(x1 - Connection.ARROW_OUTER_LENGTH,
+                       (int)(y1 - Connection.ARROW_OUTER_LENGTH * Connection.ARROW_ANGLE_TAN));
+        arrow.addPoint(x1 - Connection.ARROW_INNER_LENGTH, y1);
+
+        return arrow;
     }
 
     /**
@@ -346,5 +450,48 @@ public class GridPanel extends JPanel {
 
     public boolean isDragging(GraphicsElement element) {
         return draggedElements.contains(element);
+    }
+
+    public void startConnection(GraphicsElement element, boolean breaked) {
+        System.out.printf("Connection started on %s%n", element.getType());
+
+        if (breaked) {
+            startBreakedConnection(element);
+        } else {
+            startStraightConnection(element);
+        }
+    }
+
+    private void startBreakedConnection(GraphicsElement element) {
+        throw new NotImplementedException();
+    }
+
+    private void startStraightConnection(GraphicsElement element) {
+        currentConnection = new StraightConnection(element);
+        updateConnection(element.getPosition());
+    }
+
+    public void updateConnection(int endX, int endY) {
+        updateConnection(new Point(endX, endY));
+    }
+
+    public void updateConnection(Point endPosition) {
+        currentConnectionEnd = endPosition;
+    }
+
+    public void endConnection(GraphicsElement element) {
+        if (element != null) {
+            PTNetElements fromType = currentConnection.getFrom().getType();
+            PTNetElements toType = element.getType();
+
+            if (! fromType.isSimmilar(toType)) {
+                currentConnection.setTo(element);
+//                currentConnection.countOptimaCoord();
+                connections.add(currentConnection);
+            }
+        }
+
+        currentConnection = null;
+        currentConnectionEnd = null;
     }
 }
