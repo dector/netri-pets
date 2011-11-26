@@ -189,7 +189,36 @@ public class GridPanel extends JPanel {
     }
 
     public void addElement(GraphicsElement element) {
+        // Place by grid
+        placeElementByGrid(element);
+
         addedElements.add(element);
+    }
+
+    private GraphicsElement placeElementByGrid(GraphicsElement element) {
+        int elementPos = element.getX() - element.getWidth()/2;
+        elementPos %= grid.getElementXStep();
+        if (elementPos != 0) {
+            if (elementPos >= grid.getElementXStep()) {
+                elementPos = element.getX() + elementPos;
+            } else {
+                elementPos = element.getX() - elementPos;
+            }
+            element.setX(elementPos);
+        }
+
+        elementPos = element.getY() - element.getHeight()/2;
+        elementPos %= grid.getElementYStep();
+        if (elementPos != 0) {
+            if (elementPos >= grid.getElementYStep()) {
+                elementPos = element.getY() + elementPos;
+            } else {
+                elementPos = element.getY() - elementPos;
+            }
+            element.setY(elementPos);
+        }
+
+        return element;
     }
 
     public void addAndSelectElement(PTNetElements type, int x, int y, boolean multiselect) {
@@ -200,7 +229,7 @@ public class GridPanel extends JPanel {
     }
 
     public void addElement(PTNetElements type, int x, int y) {
-        addedElements.add(new GraphicsElement(type, x, y));
+        addElement(new GraphicsElement(type, x, y));
     }
 
     public GraphicsElement getElementAt(int x, int y) {
@@ -238,7 +267,34 @@ public class GridPanel extends JPanel {
         draggedElements.clear();
     }
 
-    public void dragElements(int dx, int dy) {
+    public int[] dragElements(int x, int y, int x0, int y0) {
+        int[] newCoords = new int[2];
+        newCoords[0] = x0;
+        newCoords[1] = y0;
+
+        int dx = x - x0;
+        int changedX = dx / grid.getElementXStep();
+        int dy = y - y0;
+        int changedY = dy / grid.getElementYStep();
+
+        if (changedX != 0) {
+            newCoords[0] = x;
+            for (GraphicsElement element : draggedElements) {
+                element.setX(element.getX() + dx);
+            }
+        }
+
+        if (changedY != 0) {
+            newCoords[1] = y;
+            for (GraphicsElement element : draggedElements) {
+                element.setY(element.getY() + dy);
+            }
+        }
+
+        return newCoords;
+    }
+
+    private void dragElements(int dx, int dy) {
         for (GraphicsElement element : draggedElements) {
             element.setX(element.getX() + dx);
             element.setY(element.getY() + dy);

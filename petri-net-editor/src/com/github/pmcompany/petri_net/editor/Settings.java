@@ -47,8 +47,7 @@ public class Settings {
 
     public static float ELEMENT_BORDER_WIDTH = 2.5f;
 
-//    public static Color SELECTION_BORDER_COLOR = Color.BLUE;
-    public static Color SELECTION_FILL_COLOR = Color.LIGHT_GRAY;
+    public static Color SELECTION_FILL_COLOR = new Color(51, 204, 255, 220);
 
     public static Color PLACE_FILL_COLOR = Color.WHITE;
     public static Color PLACE_BORDER_COLOR = Color.BLACK;

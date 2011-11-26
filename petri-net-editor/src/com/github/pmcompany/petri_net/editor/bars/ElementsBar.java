@@ -26,6 +26,7 @@ public class ElementsBar extends PalleteToolBar {
             }
         });
         add(button);
+        setActiveButton(button);
 
         button = new JToggleButton("P");
         button.addMouseListener(new MouseAdapter() {
@@ -57,11 +58,21 @@ public class ElementsBar extends PalleteToolBar {
         });
         add(button);
 
-        button = new JToggleButton("--");
+        button = new JToggleButton("-->");
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 EditorController.getInstance().switchTool(EditorTool.CONNECTION);
+                setActiveButton((JToggleButton)e.getSource());
+            }
+        });
+        add(button);
+
+        button = new JToggleButton("|_>");
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                EditorController.getInstance().switchTool(EditorTool.BREAKED_CONNECTION);
                 setActiveButton((JToggleButton)e.getSource());
             }
         });

@@ -59,10 +59,10 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
     }
 
     public void mouseReleased(MouseEvent e) {
-                if (dragging) {
-                    gridPanel.stopDragElements();
-                    dragging = false;
-                }
+        if (dragging) {
+            gridPanel.stopDragElements();
+            dragging = false;
+        }
         controller.updateView();
     }
 
@@ -77,19 +77,26 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
         GraphicsElement element = gridPanel.getElementAt(e.getX(), e.getY());
         boolean selected = gridPanel.isSelected(element);
 
+        boolean changed = false;
+
         if (selected && ! dragging) {
             gridPanel.startDragElements();
             dragging = true;
         }
 
-        int dx = x - x0;
-        x0 = x;
-        int dy = y - y0;
-        y0 = y;
+        int[] newCoords = gridPanel.dragElements(x, y, x0, y0);
+        if (x0 != newCoords[0]) {
+            x0 = newCoords[0];
+            changed = true;
+        }
+        if (y0 != newCoords[1]) {
+            y0 = newCoords[1];
+            changed = true;
+        }
 
-        gridPanel.dragElements(dx, dy);
-
-        controller.updateView();
+        if (changed) {
+            controller.updateView();
+        }
     }
 
     public void mouseMoved(MouseEvent e) {}

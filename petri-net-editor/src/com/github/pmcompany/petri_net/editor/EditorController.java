@@ -110,6 +110,7 @@ public class EditorController {
         gridPanelsList.add(gp);
 
         pane.addTab(UILabels.DEFAULT_FILENAME, gp);
+        pane.setSelectedIndex(pane.getTabCount()-1);
         pane.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {

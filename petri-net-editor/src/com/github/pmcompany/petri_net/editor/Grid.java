@@ -39,7 +39,8 @@ package com.github.pmcompany.petri_net.editor;
  */
 public class Grid {
     /** Default distance between grid nodes */
-    public static final int DEFAULT_STEP = 15;
+    public static final int DEFAULT_STEP = 20;
+    public static final int DEFAULT_ELEMENT_STEP = 10;
     /** Default padding for grid */
     public static final int DEFAULT_COORD = DEFAULT_STEP/2;
 
@@ -52,6 +53,9 @@ public class Grid {
     /** Top padding value */
     private int topCoord;
 
+    private int elementXStep;
+    private int elementYStep;
+
     /**
      * Create new Grid instance with default parameters
      */
@@ -60,6 +64,9 @@ public class Grid {
         stepY = DEFAULT_STEP;
         leftCoord = DEFAULT_COORD;
         topCoord = DEFAULT_COORD;
+
+        elementXStep = DEFAULT_ELEMENT_STEP;
+        elementYStep = DEFAULT_ELEMENT_STEP;
     }
 
     /**
@@ -131,5 +138,21 @@ public class Grid {
      */
     public void setTopCoord(int topCoord) {
         this.topCoord = topCoord;
+    }
+
+    public int getElementXStep() {
+        return elementXStep;
+    }
+
+    public void setElementXStep(int elementXStep) {
+        this.elementXStep = elementXStep;
+    }
+
+    public int getElementYStep() {
+        return elementYStep;
+    }
+
+    public void setElementYStep(int elementYStep) {
+        this.elementYStep = elementYStep;
     }
 }
