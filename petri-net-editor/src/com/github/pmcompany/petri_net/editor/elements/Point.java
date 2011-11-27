@@ -34,4 +34,19 @@ public class Point {
         this.x = x;
         this.y = y;
     }
+
+    @Override
+    public String toString() {
+        return x + ":" + y;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean equals = false;
+
+        equals |= ((Point)obj).getX() == getX();
+        equals |= ((Point)obj).getY() == getY();
+
+        return equals;
+    }
 }

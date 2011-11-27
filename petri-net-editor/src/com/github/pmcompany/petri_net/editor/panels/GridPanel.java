@@ -212,11 +212,11 @@ public class GridPanel extends JPanel {
             g.setColor(Settings.TRANSITION_PLACE_CONNECTION_COLOR);
         }
 
-        List<Point> points = createArrowPoints(connection, end);
+        List<Point> points = getConnectionPoints(connection, end);
 
         if (points != null && ! points.isEmpty()) {
             Point p0 = points.get(0);
-            Point p1;
+            Point p1 = null;
             for (int i = 1; i < points.size(); i++) {
                 p1 = points.get(i);
 
@@ -225,8 +225,12 @@ public class GridPanel extends JPanel {
                 p0 = p1;
             }
 
-            p1 = p0;
             p0 = points.get(points.size()-2);
+
+            if (p0.equals(p1) && points.size() > 2) {
+                p1 = p0;
+                p0 = points.get(points.size()-3);
+            }
 
             int x0 = p0.getX();
             int x1 = p1.getX();
@@ -250,7 +254,7 @@ public class GridPanel extends JPanel {
         }
     }
 
-    private List<Point> createArrowPoints(Connection connection, Point end) {
+    private List<Point> getConnectionPoints(Connection connection, Point end) {
         List<Point> p = new ArrayList<Point>();
 
         // +----------------------------------------------------+

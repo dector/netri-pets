@@ -61,6 +61,8 @@ public class MainMenuBar extends JMenuBar {
         });
         menu.add(item);
 
+        menu.addSeparator();
+
         item = new JMenuItem(MENU_QUIT, KeyEvent.VK_CONTROL & KeyEvent.VK_Q);
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
