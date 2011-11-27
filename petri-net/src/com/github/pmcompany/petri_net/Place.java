@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.pmcompany.petri_net.elements;
+package com.github.pmcompany.petri_net;
 
 /**
  * Entity that describes Place in P/T net
@@ -42,7 +42,8 @@ package com.github.pmcompany.petri_net.elements;
  * @see Arc
  */
 public class Place extends Node {
-    private static final String DEFAULT_NAME = "";
+    public static final String PLACE_NAME = "P";
+
     private static final long DEFAULT_TOKENS_NUMBER = 0;
 
     /** Number of tokens in current Place */
@@ -51,31 +52,23 @@ public class Place extends Node {
     /**
      * Create new instance with specified parameters
      *
-     * @param name      Place's name
+     * @param id        Place's id
      * @param tokens    number of tokens inside
      */
-    public Place(String name, long tokens) {
-        super(name);
+    Place(int id, long tokens) {
+        super(id);
 
         this.tokens = tokens;
     }
 
     /**
-     * Create new instance with specified name.<br />
+     * Create new instance with specified number.<br />
      * This Place <b>has no tokes</b>!
      *
-     * @param name      Place's name
+     * @param id        Place's id
      */
-    public Place(String name) {
-        this(name, DEFAULT_TOKENS_NUMBER);
-    }
-
-    /**
-     * Create new instance with default parameters.<br />
-     * This Place <b>has no tokes</b>!
-     */
-    public Place() {
-        this(DEFAULT_NAME);
+    Place(int id) {
+        this(id, DEFAULT_TOKENS_NUMBER);
     }
 
     /**
@@ -96,7 +89,7 @@ public class Place extends Node {
      * @param tokensCount   number of tokens to pick-up
      * @return              <b>true</b> if tokens where picked-up, else <b>false</b>
      */
-    public boolean pickTokens(long tokensCount) {
+    boolean pickTokens(long tokensCount) {
         boolean success = false;
 
         if (0 < tokensCount && tokensCount <= tokens) {
@@ -114,7 +107,7 @@ public class Place extends Node {
      * @param tokensCount   number of tokens to put-on
      * @return              <b>true</b> if tokens where putted-on, else <b>false</b>
      */
-    public boolean putTokens(long tokensCount) {
+    boolean putTokens(long tokensCount) {
         boolean success = false;
 
         if (0 <= tokensCount) {
@@ -122,5 +115,15 @@ public class Place extends Node {
         }
 
         return success;
+    }
+
+    @Override
+    public boolean isTransition() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return PLACE_NAME + getId();
     }
 }

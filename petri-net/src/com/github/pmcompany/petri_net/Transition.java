@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.pmcompany.petri_net.elements;
+package com.github.pmcompany.petri_net;
 
 /**
  * Entity that describes Time transition in P/T net
@@ -42,7 +42,8 @@ package com.github.pmcompany.petri_net.elements;
  * @see Arc
  */
 public class Transition extends Node {
-    private static final String DEFAULT_NAME = "";
+    public static final String TRANSITION_NAME = "T";
+
     private static final long DEFAULT_TIME = 0;
 
     /** Transition time */
@@ -51,40 +52,23 @@ public class Transition extends Node {
     /**
      * Create new instance with specified parameters
      *
-     * @param name  Transition name
+     * @param id    Transition id
      * @param time  Transition time
      */
-    public Transition(String name, long time) {
-        super(name);
+    Transition(int id, long time) {
+        super(id);
 
         this.time = time;
     }
 
     /**
-     * Create new instance with specified name.<br />
+     * Create new instance with specified id.<br />
      * Transition will be momentary by default
      *
-     * @param name  Transition name
+     * @param id  Transition id
      */
-    public Transition(String name) {
-        this(name, DEFAULT_TIME);
-    }
-
-    /**
-     * Create new instance with specified Transition time
-     *
-     * @param time  Transition time
-     */
-    public Transition(long time) {
-        this(DEFAULT_NAME, time);
-    }
-
-    /**
-     * Create new instance with default parameters.<br />
-     * Transition will be momentary by default
-     */
-    public Transition() {
-        this(DEFAULT_NAME, DEFAULT_TIME);
+    Transition(int id) {
+        this(id, DEFAULT_TIME);
     }
 
     /**
@@ -101,7 +85,7 @@ public class Transition extends Node {
      *
      * @param time  new Transition time
      */
-    public void setTime(long time) {
+    void setTime(long time) {
         this.time = time;
     }
 
@@ -113,5 +97,15 @@ public class Transition extends Node {
      */
     public boolean isMomentary() {
         return (time == 0);
+    }
+
+    @Override
+    public boolean isTransition() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return TRANSITION_NAME + getId();
     }
 }

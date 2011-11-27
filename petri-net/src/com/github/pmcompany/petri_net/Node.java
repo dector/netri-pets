@@ -29,7 +29,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.pmcompany.petri_net.elements;
+package com.github.pmcompany.petri_net;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,36 +55,36 @@ public abstract class Node {
     private List<Arc> outputArcs;
 
     /** Name value */
-    private String name;
+    private int id;
 
     /**
-     * Create new instance with selected name
+     * Create new instance with selected id
      *
-     * @param name node name
+     * @param id node id
      */
-    Node(String name) {
-        this.name = name;
+    Node(int id) {
+        this.id = id;
 
         inputArcs = new ArrayList<Arc>();
         outputArcs = new ArrayList<Arc>();
     }
 
     /**
-     * Returns node name
+     * Returns node id
      *
-     * @return node name
+     * @return node id
      */
-    public String getName() {
-        return name;
+    public int getId() {
+        return id;
     }
 
     /**
-     * Sets node name
+     * Sets node id
      *
-     * @param name node name
+     * @param id node id
      */
-    public void setName(String name) {
-        this.name = name;
+    void setId(int id) {
+        this.id = id;
     }
 
     /**
@@ -91,8 +93,17 @@ public abstract class Node {
      * @param arc   Arc to attach
      * @return      <b>true</b> if Arc was attaches, else <b>false</b>
      */
-    public boolean addInputArc(Arc arc) {
-        return inputArcs.add(arc);
+    boolean addInputArc(Arc arc) {
+        boolean added = false;
+
+        if (inputArcs.contains(arc)) {
+            arc.incrementCount();
+            added = true;
+        } else {
+            added = inputArcs.add(arc);
+        }
+
+        return added;
     }
 
     /**
@@ -120,8 +131,17 @@ public abstract class Node {
      * @param arc   Arc to attach
      * @return      <b>true</b> if Arc was attaches, else <b>false</b>
      */
-    public boolean addOutputArc(Arc arc) {
-        return outputArcs.add(arc);
+    boolean addOutputArc(Arc arc) {
+        boolean added = false;
+
+        if (outputArcs.contains(arc)) {
+            arc.incrementCount();
+            added = true;
+        } else {
+            added = outputArcs.add(arc);
+        }
+
+        return added;
     }
 
     /**
@@ -159,5 +179,9 @@ public abstract class Node {
      */
     public int countOutputArcs() {
         return outputArcs.size();
+    }
+
+    public boolean isTransition() {
+        throw new NotImplementedException();
     }
 }
