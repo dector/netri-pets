@@ -142,64 +142,7 @@ public class PetriNet {
         return connections.size();
     }
 
-//    private int countTransitionInputConnections(int transitionId, int fromPlaceId) {
-//        int count = 0;
-//
-//        Transition t = getTransition(transitionId);
-//        Iterator<Arc> iterator = t.getInputArcsIterator();
-//
-//        Arc<Place, Transition> connection;
-//        while (iterator.hasNext()) {
-//            connection = iterator.next();
-//
-//            if (connection.getOutputNode().getId() == fromPlaceId) {
-//                count++;
-//            }
-//        }
-//
-//        return count;
-//    }
-
-//    public int[][] getDI() {
-//        int[][] matrix = null;
-//
-//        int tCount = getTransitionsCount();
-//        int pCount = getPlacesCount();
-//
-//        if (tCount != 0 && pCount != 0) {
-//            matrix = new int[tCount][pCount];
-//
-//            int count;
-//            int tIndex = 0;
-//            int pIndex = 0;
-//
-//            int currTransition;
-//            int currPlace;
-//
-//            Iterator<Integer> trIterator = transitions.keySet().iterator();
-//
-//            Iterator<Integer> plIterator;
-//            while (trIterator.hasNext()) {
-//                currTransition = trIterator.next();
-//
-//                plIterator = places.keySet().iterator();
-//
-//                while (plIterator.hasNext()) {
-//                    currPlace = plIterator.next();
-//
-//
-//
-//                    pIndex++;
-//                }
-//
-//                tIndex++;
-//            }
-//        }
-//
-//        return matrix;
-//    }
-
-    public int[][] getDI() {
+    private int[][] getMatrix(boolean input) {
         int[][] matrix = null;
 
         int tCount = getTransitionsCount();
@@ -209,8 +152,8 @@ public class PetriNet {
         if (cCount != 0 && tCount != 0 && pCount != 0) {
             matrix = new int[tCount][pCount];
 
-            int tIndex = 0;
-            int pIndex = 0;
+            int tIndex;
+            int pIndex;
 
             LinkedList<Integer> placesList = new LinkedList<Integer>(places.keySet());
             LinkedList<Integer> transitionsList = new LinkedList<Integer>(transitions.keySet());
@@ -225,15 +168,135 @@ public class PetriNet {
                 inputNode = arc.getInputNode();
                 outputNode = arc.getOutputNode();
 
-                if (arc.isInput()) {        // Is transition
-                    tIndex = transitionsList.indexOf(inputNode.getId());
-                    pIndex = placesList.indexOf(outputNode.getId());
+                if (input) {
+                    if (arc.isInput()) {        // Is input to transition
+                        tIndex = transitionsList.indexOf(inputNode.getId());
+                        pIndex = placesList.indexOf(outputNode.getId());
 
-                    matrix[tIndex][pIndex] += arc.getCount();
+                        matrix[tIndex][pIndex] += arc.getCount();
+                    }
+                } else {
+                    if (! arc.isInput()) {        // Is input to place
+                        tIndex = transitionsList.indexOf(outputNode.getId());
+                        pIndex = placesList.indexOf(inputNode.getId());
+
+                        matrix[tIndex][pIndex] += arc.getCount();
+                    }
                 }
             }
         }
 
         return matrix;
+    }
+
+    public int[][] getDI() {
+        return getMatrix(true);
+    }
+
+    public int[][] getDQ() {
+        return getMatrix(false);
+    }
+
+    public int[][] getDR() {
+        int[][] matrix = null;
+
+        int[][] dq = getDQ();
+        int[][] di = getDI();
+
+
+        if (dq != null && di != null) {
+            int tCount = getTransitionsCount();
+            int pCount = getPlacesCount();
+
+            matrix = new int[tCount][pCount];
+
+            for (int i = 0; i < tCount; i++) {
+                for (int j = 0; j < pCount; j++) {
+                    matrix[i][j] = dq[i][j] - di[i][j];
+                }
+            }
+        }
+
+        return matrix;
+    }
+
+    public String[] getPlacesTitlesVector() {
+        String[] titles = null;
+
+        if (getPlacesCount() != 0) {
+            titles = new String[getPlacesCount()];
+
+            Iterator<Place> iter = places.values().iterator();
+            int index = 0;
+
+            Place place;
+            while(iter.hasNext()) {
+                place = iter.next();
+
+                titles[index++] = place.toString();
+            }
+        }
+
+        return titles;
+    }
+
+    public int[] getPlacesVector() {
+        int[] pVector = null;
+
+        if (getPlacesCount() != 0) {
+            pVector = new int[getPlacesCount()];
+
+            Iterator<Place> iter = places.values().iterator();
+            int index = 0;
+
+            Place place;
+            while(iter.hasNext()) {
+                place = iter.next();
+
+                pVector[index++] = place.countTokens();
+            }
+        }
+
+        return pVector;
+    }
+
+    public String[] getTransitionsTitlesVector() {
+        String[] titles = null;
+
+        if (getTransitionsCount() != 0) {
+            titles = new String[getTransitionsCount()];
+
+            Iterator<Transition> iter = transitions.values().iterator();
+            int index = 0;
+
+            Transition transition;
+            while(iter.hasNext()) {
+                transition = iter.next();
+
+                titles[index++] = transition.toString();
+            }
+        }
+
+        return titles;
+    }
+
+    public double[] getTransitionsVector() {
+        double[] tVector = null;
+
+        if (getTransitionsCount() != 0) {
+            tVector = new double[getTransitionsCount()];
+
+            Iterator<Transition> iter = transitions.values().iterator();
+            int index = 0;
+
+            Transition transition;
+            while(iter.hasNext()) {
+                transition = iter.next();
+
+                tVector[index++] = transition.getTime();
+            }
+        }
+
+        return tVector;
     }
 }

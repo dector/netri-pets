@@ -44,10 +44,10 @@ package com.github.pmcompany.petri_net;
 public class Place extends Node {
     public static final String PLACE_NAME = "P";
 
-    private static final long DEFAULT_TOKENS_NUMBER = 0;
+    private static final int DEFAULT_TOKENS_NUMBER = 0;
 
     /** Number of tokens in current Place */
-    private long tokens;
+    private int tokens;
 
     /**
      * Create new instance with specified parameters
@@ -55,7 +55,7 @@ public class Place extends Node {
      * @param id        Place's id
      * @param tokens    number of tokens inside
      */
-    Place(int id, long tokens) {
+    Place(int id, int tokens) {
         super(id);
 
         this.tokens = tokens;
@@ -76,7 +76,7 @@ public class Place extends Node {
      *
      * @return number of tokens
      */
-    public long countTokens() {
+    public int countTokens() {
         return tokens;
     }
 
@@ -89,7 +89,7 @@ public class Place extends Node {
      * @param tokensCount   number of tokens to pick-up
      * @return              <b>true</b> if tokens where picked-up, else <b>false</b>
      */
-    boolean pickTokens(long tokensCount) {
+    boolean pickTokens(int tokensCount) {
         boolean success = false;
 
         if (0 < tokensCount && tokensCount <= tokens) {
@@ -107,7 +107,7 @@ public class Place extends Node {
      * @param tokensCount   number of tokens to put-on
      * @return              <b>true</b> if tokens where putted-on, else <b>false</b>
      */
-    boolean putTokens(long tokensCount) {
+    boolean putTokens(int tokensCount) {
         boolean success = false;
 
         if (0 <= tokensCount) {

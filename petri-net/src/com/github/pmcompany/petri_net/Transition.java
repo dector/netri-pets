@@ -44,10 +44,10 @@ package com.github.pmcompany.petri_net;
 public class Transition extends Node {
     public static final String TRANSITION_NAME = "T";
 
-    private static final long DEFAULT_TIME = 0;
+    private static final double DEFAULT_TIME = 0d;
 
     /** Transition time */
-    private long time;
+    private double time;
 
     /**
      * Create new instance with specified parameters
@@ -55,7 +55,7 @@ public class Transition extends Node {
      * @param id    Transition id
      * @param time  Transition time
      */
-    Transition(int id, long time) {
+    Transition(int id, double time) {
         super(id);
 
         this.time = time;
@@ -76,7 +76,7 @@ public class Transition extends Node {
      *
      * @return  Transition time
      */
-    public long getTime() {
+    public double getTime() {
         return time;
     }
 
@@ -85,7 +85,7 @@ public class Transition extends Node {
      *
      * @param time  new Transition time
      */
-    void setTime(long time) {
+    void setTime(double time) {
         this.time = time;
     }
 
