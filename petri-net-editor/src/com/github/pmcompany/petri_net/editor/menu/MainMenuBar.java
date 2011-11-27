@@ -62,6 +62,31 @@ public class MainMenuBar extends JMenuBar {
         });
         menu.add(item);
 
+        item = new JMenuItem(MENU_SAVE);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.VK_CONTROL));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().saveFile();
+            }
+        });
+        menu.add(item);
+
+        item = new JMenuItem(MENU_SAVEAS);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().saveFileAs();
+            }
+        });
+        menu.add(item);
+
+        item = new JMenuItem(MENU_CLOSE);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().closeFile();
+            }
+        });
+        menu.add(item);
+
         menu.addSeparator();
 
         item = new JMenuItem(MENU_QUIT);

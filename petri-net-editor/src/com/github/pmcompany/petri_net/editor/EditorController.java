@@ -31,13 +31,17 @@
 
 package com.github.pmcompany.petri_net.editor;
 
-import com.github.pmcompany.petri_net.common.UILabels;
-import com.github.pmcompany.petri_net.editor.bars.ElementsBar;
+import static com.github.pmcompany.petri_net.common.UILabels.*;
+
+import com.github.pmcompany.petri_net.editor.menu.TabPopupMenu;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +57,8 @@ public class EditorController {
 
     /** Managed tabbed pane */
     private JTabbedPane pane;
+
+    private JFrame frame;
 
     /** List of opened P/T nets */
     private List<GridPanel> gridPanelsList;
@@ -72,9 +78,21 @@ public class EditorController {
      *
      * @param pane managed tabbed pane
      */
-    private EditorController(JTabbedPane pane) {
+    private EditorController(JTabbedPane pane, JFrame frame) {
         this();
+
         this.pane = pane;
+
+        this.frame = frame;
+
+        pane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                EditorController.getInstance().updateFrameTitle();
+            }
+        });
+
+        updateFrameTitle();
     }
 
     /**
@@ -96,8 +114,8 @@ public class EditorController {
      * @param pane managed tabbed pane
      * @return new instance
      */
-    public static EditorController newInstance(JTabbedPane pane) {
-        instance = new EditorController(pane);
+    public static EditorController newInstance(JTabbedPane pane, JFrame frame) {
+        instance = new EditorController(pane, frame);
 
         return instance;
     }
@@ -110,7 +128,7 @@ public class EditorController {
 
         gridPanelsList.add(gp);
 
-        pane.addTab(UILabels.DEFAULT_FILENAME, gp);
+        pane.addTab(DEFAULT_FILENAME, gp);
         pane.setSelectedIndex(pane.getTabCount()-1);
         pane.addComponentListener(new ComponentAdapter() {
             @Override
@@ -121,6 +139,8 @@ public class EditorController {
                 }
             }
         });
+
+        updateFrameTitle();
     }
 
     public void switchTool(EditorTool tool) {
@@ -132,6 +152,43 @@ public class EditorController {
     }
 
     public void updateView() {
-        pane.repaint();
+        int index = pane.getSelectedIndex();
+
+        pane.getComponentAt(index).repaint();
+    }
+
+    public void saveFile() {
+        throw new NotImplementedException();
+    }
+
+    public void saveFileAs() {
+        throw new NotImplementedException();
+    }
+
+    public void closeFile() {
+        int index = pane.getSelectedIndex();
+
+        if (! gridPanelsList.get(index).isSaved()) {
+            int choose =
+                    JOptionPane.showOptionDialog(frame, MESSAGE_FILE_WAS_NOT_SAVED_REALLY_CLOSE,
+                            MESSAGE_TITLE_FILE_NOT_SAVED, JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE, null, null, null);
+
+            switch (choose) {
+                case 0: {
+                    pane.removeTabAt(index);
+                    updateFrameTitle();
+                } break;
+            }
+        }
+    }
+
+    public void updateFrameTitle() {
+        if (pane.getTabCount() != 0) {
+            frame.setTitle(TITLE + TITLE_SEPARATOR
+                    + pane.getTitleAt(pane.getSelectedIndex()));
+        } else {
+            frame.setTitle(TITLE);
+        }
     }
 }

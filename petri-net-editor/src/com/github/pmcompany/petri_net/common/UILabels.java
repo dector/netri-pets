@@ -38,11 +38,21 @@ package com.github.pmcompany.petri_net.common;
  * @version 0.1
  */
 public final class UILabels {
-    public static final String PROJECT_NAME = "PETRI NETS";
+    public static final String TITLE = "Petri Nets Editor And Simulator";
+
+    public static final String TITLE_SEPARATOR = " :: ";
 
     public static final String DEFAULT_FILENAME = "Unnamed";
 
     public static final String MENU_FILE = "File";
-    public static final String MENU_CREATE = "New";
-    public static final String MENU_QUIT = "Quit";
+    public static final String MENU_CREATE = "New..";
+    public static final String MENU_SAVE = "Save..";
+    public static final String MENU_SAVEAS = "Save as..";
+    public static final String MENU_CLOSE = "Close..";
+    public static final String MENU_QUIT = "Quit..";
+
+
+    public static final String MESSAGE_FILE_WAS_NOT_SAVED_REALLY_CLOSE =
+            "File was not saved. All changes will be lost. Really close?";
+    public static final String MESSAGE_TITLE_FILE_NOT_SAVED = "File was not saved";
 }

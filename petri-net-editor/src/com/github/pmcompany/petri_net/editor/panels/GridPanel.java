@@ -55,6 +55,8 @@ public class GridPanel extends JPanel {
     /** Grid parameters */
     private Grid grid;
 
+    private boolean saved;
+
     private List<GraphicsElement> addedElements;
 
     private List<GraphicsElement> draggedElements;
@@ -620,5 +622,13 @@ public class GridPanel extends JPanel {
         }
 
         connections.removeAll(connectionsToDelete);
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 }

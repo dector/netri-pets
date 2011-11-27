@@ -34,7 +34,6 @@ package com.github.pmcompany.petri_net.editor.frames;
 import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.editor.bars.ElementsBar;
 import com.github.pmcompany.petri_net.editor.menu.MainMenuBar;
-import com.github.pmcompany.petri_net.editor.panels.GridPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,7 +60,7 @@ public class EditorFrame extends JFrame {
     public EditorFrame() {
         buildGUI();
 
-        controller = EditorController.newInstance(tabbedPane);
+        controller = EditorController.newInstance(tabbedPane, this);
     }
 
     /**
@@ -71,7 +70,7 @@ public class EditorFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         //todo: fixme
         setSize(640, 480);
-        setTitle(PROJECT_NAME);
+        setTitle(TITLE);
         setLayout(new BorderLayout());
 
         MainMenuBar menuBar = new MainMenuBar();
