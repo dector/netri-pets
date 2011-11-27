@@ -152,6 +152,7 @@ public class PetriNet {
     }
 
     public boolean removeConnection(Arc connection) {
+        connection.clearConnection();
         return connections.remove(connection);
     }
 

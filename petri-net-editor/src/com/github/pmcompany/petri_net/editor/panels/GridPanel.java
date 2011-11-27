@@ -734,9 +734,16 @@ public class GridPanel extends JPanel {
             }
         }
 
+        for (Connection connection : selectedConnections) {
+            ptnet.removeConnection(connection.getArc());
+        }
+
+        connectionsToDelete.addAll(selectedConnections);
+
         addedElements.removeAll(selectedElements);
         draggedElements.removeAll(selectedElements);
         selectedElements.clear();
+        selectedConnections.clear();
 
         for (Connection delConnection : connectionsToDelete) {
             delConnection.setFrom(null);

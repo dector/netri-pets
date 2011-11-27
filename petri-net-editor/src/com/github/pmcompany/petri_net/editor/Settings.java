@@ -69,7 +69,7 @@ public class Settings {
     public static Color MOMENTAL_TRANSITION_FILL_COLOR = Color.BLACK;
     public static Color MOMENTAL_TRANSITION_BORDER_COLOR = Color.BLACK;
 
-    public static Color SELECTED_CONNECTION_COLOR = Color.GREEN;
+    public static Color SELECTED_CONNECTION_COLOR = Color.ORANGE;
     public static Color PLACE_TRANSITION_CONNECTION_COLOR = Color.RED;
     public static Color TRANSITION_PLACE_CONNECTION_COLOR = Color.BLUE;
 }
