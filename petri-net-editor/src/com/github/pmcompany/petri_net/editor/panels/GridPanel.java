@@ -694,6 +694,12 @@ public class GridPanel extends JPanel {
         for (GraphicsElement element : selectedElements) {
             connectionsToDelete.addAll(element.getOutputConnections());
             connectionsToDelete.addAll(element.getInputConnections());
+
+            if (element.getNode().isTransition()) {
+                ptnet.removeTransition(element.getNode().getId());
+            } else {
+                ptnet.removePlace(element.getNode().getId());
+            }
         }
 
         addedElements.removeAll(selectedElements);

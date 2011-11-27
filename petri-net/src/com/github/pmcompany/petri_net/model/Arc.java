@@ -170,4 +170,9 @@ public class Arc<NodeFrom extends Node, NodeTo extends Node> {
 
         return sb.toString();
     }
+
+    public void clearConnection() {
+        inputNode = null;
+        outputNode = null;
+    }
 }

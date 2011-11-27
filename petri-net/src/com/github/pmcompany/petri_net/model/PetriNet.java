@@ -45,8 +45,12 @@ public class PetriNet {
 
         Place place = places.remove(id);
 
+        connections.removeAll(place.getInputArcs());
+        connections.removeAll(place.getOutputArcs());
+        place.clearAllConnections();
+
         if (id == lastId) {
-            lastPlaceId = idList.getLast();
+            lastPlaceId = (! idList.isEmpty()) ? idList.getLast() : 0;
         }
 
         return place;
@@ -76,9 +80,12 @@ public class PetriNet {
         int lastId = idList.removeLast();
 
         Transition transition = transitions.remove(id);
+        connections.removeAll(transition.getInputArcs());
+        connections.removeAll(transition.getOutputArcs());
+        transition.clearAllConnections();
 
         if (id == lastId) {
-            lastTransitionId = idList.getLast();
+            lastTransitionId = (! idList.isEmpty()) ? idList.getLast() : 0;
         }
 
         return transition;

@@ -33,9 +33,7 @@ package com.github.pmcompany.petri_net.model;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Abstract entity, that describes graph node (P/T net's Place/Transition)
@@ -204,5 +202,18 @@ public abstract class Node {
 
     public boolean isConnectedTo(Node node) {
         return getConnectionTo(node) != null;
+    }
+
+    void clearAllConnections() {
+        inputArcs.clear();
+        outputArcs.clear();
+    }
+
+    List<Arc> getInputArcs() {
+        return inputArcs;
+    }
+
+    List<Arc> getOutputArcs() {
+        return outputArcs;
     }
 }
