@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.pmcompany.petri_net;
+package com.github.pmcompany.petri_net.model;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -183,5 +183,26 @@ public abstract class Node {
 
     public boolean isTransition() {
         throw new NotImplementedException();
+    }
+
+    public Arc getConnectionTo(Node node) {
+        Arc connectedArc = null;
+
+        Iterator<Arc> iter = outputArcs.iterator();
+
+        Arc arc;
+        while (iter.hasNext() && connectedArc == null) {
+            arc = iter.next();
+
+            if (arc.getInputNode() == node) {
+                connectedArc = arc;
+            }
+        }
+
+        return connectedArc;
+    }
+
+    public boolean isConnectedTo(Node node) {
+        return getConnectionTo(node) != null;
     }
 }

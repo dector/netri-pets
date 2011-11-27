@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.pmcompany.petri_net;
+package com.github.pmcompany.petri_net.model;
 
 /**
  * Describes graph edge between P/T net's Places and Transitions<br /><br />

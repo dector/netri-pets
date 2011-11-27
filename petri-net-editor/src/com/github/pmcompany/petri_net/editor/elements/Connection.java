@@ -1,5 +1,7 @@
 package com.github.pmcompany.petri_net.editor.elements;
 
+import com.github.pmcompany.petri_net.model.Arc;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +17,8 @@ public abstract class Connection {
 
     private GraphicsElement from;
     private GraphicsElement to;
+
+    private Arc arc;
 
     public Connection(GraphicsElement from, GraphicsElement to) {
         this.from = from;
@@ -148,5 +152,13 @@ public abstract class Connection {
 
     public boolean hasOneMiddlepoint() {
         return false;
+    }
+
+    public Arc getArc() {
+        return arc;
+    }
+
+    public void setArc(Arc arc) {
+        this.arc = arc;
     }
 }

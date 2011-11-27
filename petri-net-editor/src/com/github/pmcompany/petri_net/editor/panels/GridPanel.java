@@ -31,19 +31,23 @@
 
 package com.github.pmcompany.petri_net.editor.panels;
 
+import com.github.pmcompany.petri_net.model.Arc;
+import com.github.pmcompany.petri_net.model.Node;
+import com.github.pmcompany.petri_net.model.PetriNet;
 import com.github.pmcompany.petri_net.editor.Grid;
 import com.github.pmcompany.petri_net.editor.Settings;
 import com.github.pmcompany.petri_net.editor.elements.*;
 import com.github.pmcompany.petri_net.editor.elements.Point;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelKeyListener;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
+
+//todo: Separate to Visual representation and Current P/T net controller
 
 /**
  * JPanel which draws P/T net components
@@ -66,7 +70,11 @@ public class GridPanel extends JPanel {
     private Connection currentConnection;
     private Point currentConnectionEnd;
 
+    private PetriNet ptnet;
+
     private Stroke elementStroke;
+    private Font titleFont;
+    private Font connectionsFont;
     private Stroke connectionStroke;
 
     private Polygon arrow;
@@ -82,11 +90,15 @@ public class GridPanel extends JPanel {
         selectedElements = new ArrayList<GraphicsElement>();
         connections = new ArrayList<Connection>();
 
+        ptnet = new PetriNet();
+
         grid = new Grid();
         setSize(dimension);
 
         elementStroke = new BasicStroke(Settings.ELEMENT_BORDER_WIDTH);
         connectionStroke = new BasicStroke(Settings.CONNECTION_WIDTH);
+        titleFont = new Font(Font.SANS_SERIF, Font.PLAIN, Settings.ELEMENT_TITLE_SIZE);
+        connectionsFont = new Font(Font.SANS_SERIF, Font.BOLD, Settings.CONNECTION_TITLE_SIZE);
 
         GridPanelMouseListener gpl = new GridPanelMouseListener(this);
         addMouseListener(gpl);
@@ -119,6 +131,11 @@ public class GridPanel extends JPanel {
 
         // ========== [BEGIN] DRAW P/T NET
         g.setStroke(elementStroke);
+        g.setFont(titleFont);
+
+        FontMetrics fm = g.getFontMetrics(titleFont);
+        int strWidth;
+        String title;
 
         int elementX;
         int elementY;
@@ -150,7 +167,17 @@ public class GridPanel extends JPanel {
                     }
 
                     g.drawOval(elementX, elementY, GraphicsElement.PLACE_SIZE, GraphicsElement.PLACE_SIZE);
+
+                    if (! dragging) {
+                        g.setColor(Settings.ELEMENT_TITLE_COLOR);
+
+                        title = currElement.getNode().toString();
+                        strWidth = fm.stringWidth(title);
+                        g.drawString(title, currElement.getX() - strWidth/2,
+                                elementY - Settings.ELEMENT_TITLE_PADDING);
+                    }
                 } break;
+
                 case TRANSITION: {
                     elementX -= GraphicsElement.TRANSITION_WIDTH/2;
                     elementY -= GraphicsElement.TRANSITION_HEIGHT/2;
@@ -169,7 +196,17 @@ public class GridPanel extends JPanel {
                     }
 
                     g.drawRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
+
+                    if (! dragging) {
+                        g.setColor(Settings.ELEMENT_TITLE_COLOR);
+
+                        title = currElement.getNode().toString();
+                        strWidth = fm.stringWidth(title);
+                        g.drawString(title, currElement.getX() - strWidth/2,
+                                elementY - Settings.ELEMENT_TITLE_PADDING);
+                    }
                 } break;
+
                 case MOMENTAL_TRANSITION: {
                     elementX -= GraphicsElement.MOMENTAL_TRANSITION_WIDTH/2;
                     elementY -= GraphicsElement.MOMENTAL_TRANSITION_HEIGHT/2;
@@ -188,12 +225,22 @@ public class GridPanel extends JPanel {
                     }
 
                     g.drawRect(elementX, elementY, GraphicsElement.MOMENTAL_TRANSITION_WIDTH, GraphicsElement.MOMENTAL_TRANSITION_HEIGHT);
+
+                    if (! dragging) {
+                        g.setColor(Settings.ELEMENT_TITLE_COLOR);
+
+                        title = currElement.getNode().toString();
+                        strWidth = fm.stringWidth(title);
+                        g.drawString(title, currElement.getX() - strWidth/2,
+                                elementY - Settings.ELEMENT_TITLE_PADDING);
+                    }
                 } break;
             }
 
         }
 
         g.setStroke(connectionStroke);
+        g.setFont(connectionsFont);
 
         for (Connection connection : connections) {
             drawConnection(g, connection);
@@ -254,7 +301,17 @@ public class GridPanel extends JPanel {
 
             g.translate(x1, y1);
             g.rotate(theta);
+
             g.fillPolygon(arrow);
+
+            if (connection.getArc() != null && connection.getArc().getCount() > 1) {
+                g.setColor(Settings.ELEMENT_TITLE_COLOR);
+                FontMetrics fm = g.getFontMetrics(titleFont);
+                String connectionsCount = String.valueOf(connection.getArc().getCount());
+                int strWidth = fm.stringWidth(connectionsCount);
+                g.drawString(connectionsCount, - 2*strWidth, - Settings.ELEMENT_TITLE_PADDING);
+            }
+
             g.rotate(-theta);
             g.translate(-x1, -y1);
         }
@@ -422,7 +479,18 @@ public class GridPanel extends JPanel {
 
     public void addAndSelectElement(PTNetElements type, int x, int y, boolean multiselect) {
         System.out.printf("Adding and selecting %s at %d:%d%n", type, x, y);
+
         GraphicsElement element = new GraphicsElement(type, x, y);
+
+        Node node = null;
+        switch (type) {
+            case PLACE: node = ptnet.createNewPlace(); break;
+            case TRANSITION:
+            case MOMENTAL_TRANSITION: node = ptnet.createNewTransition();
+        }
+
+        element.setNode(node);
+
         addElement(element);
         selectElement(element, multiselect);
     }
@@ -594,9 +662,25 @@ public class GridPanel extends JPanel {
             PTNetElements toType = element.getType();
 
             if (! fromType.isSimmilar(toType)) {
-                currentConnection.setTo(element);
-                element.addInputConnection(currentConnection);
-                connections.add(currentConnection);
+                Node fromNode = currentConnection.getFrom().getNode();
+                Node toNode = element.getNode();
+
+                Arc existingArc = fromNode.getConnectionTo(toNode);
+                if (existingArc == null) {
+                    currentConnection.setTo(element);
+
+                    element.addInputConnection(currentConnection);
+                    connections.add(currentConnection);
+                }
+
+                Arc newArc;
+                if (fromNode.isTransition()) {
+                    newArc = ptnet.createOutputConnection(toNode.getId(), fromNode.getId());
+                } else {
+                    newArc = ptnet.createInputConnection(fromNode.getId(), toNode.getId());
+                }
+
+                currentConnection.setArc(newArc);
             }
         }
 

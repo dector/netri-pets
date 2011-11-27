@@ -1,5 +1,7 @@
 package com.github.pmcompany.petri_net.editor.elements;
 
+import com.github.pmcompany.petri_net.model.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ public class GraphicsElement {
 
     private List<Connection> outputConnections;
     private List<Connection> inputConnections;
+
+    private Node node;
 
     public GraphicsElement(PTNetElements type, int x, int y) {
         this.type = type;
@@ -127,5 +131,13 @@ public class GraphicsElement {
 
     public List<Connection> getOutputConnections() {
         return outputConnections;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }

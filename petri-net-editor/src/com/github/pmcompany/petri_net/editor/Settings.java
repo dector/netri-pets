@@ -49,6 +49,11 @@ public class Settings {
 
     public static float CONNECTION_WIDTH = 2.5f;
 
+    public static int ELEMENT_TITLE_PADDING = 3;
+    public static int CONNECTION_TITLE_SIZE = 15;
+    public static int ELEMENT_TITLE_SIZE = 22;
+    public static Color ELEMENT_TITLE_COLOR = Color.BLACK;
+
     public static Color SELECTION_FILL_COLOR = new Color(51, 204, 255, 220);
     public static Color ELEMENT_DRAGGING_BORDER_COLOR = Color.ORANGE;
 

@@ -1,4 +1,4 @@
-package com.github.pmcompany.petri_net;
+package com.github.pmcompany.petri_net.model;
 
 import java.util.*;
 
@@ -99,17 +99,27 @@ public class PetriNet {
     }
 
     public Arc<Place, Transition> createNewConnection(Place from, Transition to) {
-        Arc arc = Arc.newInstance(from, to);
+        Arc arc = from.getConnectionTo(to);
 
-        connections.add(arc);
+        if (arc == null) {
+            arc = Arc.newInstance(from, to);
+            connections.add(arc);
+        } else {
+            arc.incrementCount();
+        }
 
         return arc;
     }
 
     public Arc<Transition, Place> createNewConnection(Transition from, Place to) {
-        Arc arc = Arc.newInstance(from, to);
+        Arc arc = from.getConnectionTo(to);
 
-        connections.add(arc);
+        if (arc == null) {
+            arc = Arc.newInstance(from, to);
+            connections.add(arc);
+        } else {
+            arc.incrementCount();
+        }
 
         return arc;
     }
