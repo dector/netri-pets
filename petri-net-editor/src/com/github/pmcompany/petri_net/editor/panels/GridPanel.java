@@ -35,14 +35,11 @@ import com.github.pmcompany.petri_net.editor.Grid;
 import com.github.pmcompany.petri_net.editor.Settings;
 import com.github.pmcompany.petri_net.editor.elements.*;
 import com.github.pmcompany.petri_net.editor.elements.Point;
-import com.github.pmcompany.petri_net.editor.listeners.GridPanelListener;
+import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -88,7 +85,7 @@ public class GridPanel extends JPanel {
         elementStroke = new BasicStroke(Settings.ELEMENT_BORDER_WIDTH);
         connectionStroke = new BasicStroke(Settings.CONNECTION_WIDTH);
 
-        GridPanelListener gpl = new GridPanelListener(this);
+        GridPanelMouseListener gpl = new GridPanelMouseListener(this);
         addMouseListener(gpl);
         addMouseMotionListener(gpl);
 
@@ -197,89 +194,160 @@ public class GridPanel extends JPanel {
         }
 
         if (currentConnection != null) {
-            drawConnection(g, currentConnection, currentConnection.getStart(), currentConnectionEnd);
+            drawConnection(g, currentConnection, currentConnectionEnd);
         }
         // ========== [END] DRAW P/T NET
 
     }
 
     private void drawConnection(Graphics2D g, Connection connection) {
-        drawConnection(g, connection, connection.getStart(), connection.getEnd());
+        drawConnection(g, connection, connection.getEnd());
     }
 
-    private void drawConnection(Graphics2D g, Connection connection, Point start, Point end) {
-        if (connection.getMiddlePoints() == null) {
-            PTNetElements elementType = connection.getFrom().getType();
-            if (elementType == PTNetElements.PLACE) {
-                g.setColor(Settings.PLACE_TRANSITION_CONNECTION_COLOR);
-            } else if (elementType == PTNetElements.TRANSITION || elementType == PTNetElements.MOMENTAL_TRANSITION) {
-                g.setColor(Settings.TRANSITION_PLACE_CONNECTION_COLOR);
+    private void drawConnection(Graphics2D g, Connection connection, Point end) {
+        PTNetElements elementType = connection.getFrom().getType();
+        if (elementType == PTNetElements.PLACE) {
+            g.setColor(Settings.PLACE_TRANSITION_CONNECTION_COLOR);
+        } else if (elementType == PTNetElements.TRANSITION || elementType == PTNetElements.MOMENTAL_TRANSITION) {
+            g.setColor(Settings.TRANSITION_PLACE_CONNECTION_COLOR);
+        }
+
+        List<Point> points = createArrowPoints(connection, end);
+
+        if (points != null && ! points.isEmpty()) {
+            Point p0 = points.get(0);
+            Point p1;
+            for (int i = 1; i < points.size(); i++) {
+                p1 = points.get(i);
+
+                g.drawLine(p0.getX(), p0.getY(), p1.getX(), p1.getY());
+
+                p0 = p1;
             }
 
-            Point[] points = createArrowPoints(connection, start, end);
+            p1 = p0;
+            p0 = points.get(points.size()-2);
 
-            if (points != null) {
-                int x0 = points[0].getX();
-                int y0 = points[0].getY();
+            int x0 = p0.getX();
+            int x1 = p1.getX();
+            int y0 = p0.getY();
+            int y1 = p1.getY();
 
-                int x1 = points[1].getX();
-                int y1 = points[1].getY();
+            double dx = x1 - x0;
+            double dy = y1 - y0;
+            double c = Math.sqrt(dx*dx + dy*dy);
 
-                g.drawLine(x0, y0, x1, y1);
-
-                double dx = x1 - x0;
-                double dy = y1 - y0;
-                double c = Math.sqrt(dx*dx + dy*dy);
-
-//                double theta = Math.atan(dy / dx);
-
-                double theta = Math.acos(dx / c);
-                if (y1 < y0) {
-                    theta = -theta;
-                }
-//                double theta = Math.acos(dx / c);
-//                double theta = Math.asin(dy / c);
-
-//                g.setColor(Color.RED);
-//                g.drawLine(-300, 0, 300, 0);
-//                g.drawLine(0, -300, 0, 300);
-
-                g.translate(x1, y1);
-
-//                g.setColor(Color.BLUE);
-//                g.drawLine(-300, 0, 300, 0);
-//                g.drawLine(0, -300, 0, 300);
-
-                g.rotate(theta);
-
-//                g.setColor(Color.GREEN);
-//                g.drawLine(-300, 0, 300, 0);
-//                g.drawLine(0, -300, 0, 300);
-
-//                g.translate(-x1, -y1);
-//
-//                g.setColor(Color.CYAN);
-//                g.drawLine(-300, 0, 300, 0);
-//                g.drawLine(0, -300, 0, 300);
-
-                g.fillPolygon(arrow);
-                g.rotate(-theta);
-                g.translate(-x1, -y1);
-
+            double theta = Math.acos(dx / c);
+            if (y1 < y0) {
+                theta = -theta;
             }
-        } else {
-            System.out.println("MiddlePoints");
+
+            g.translate(x1, y1);
+            g.rotate(theta);
+            g.fillPolygon(arrow);
+            g.rotate(-theta);
+            g.translate(-x1, -y1);
         }
     }
 
-    private Point[] createArrowPoints(Connection connection, Point start, Point end) {
-        Point[] p = null;
+    private List<Point> createArrowPoints(Connection connection, Point end) {
+        List<Point> p = new ArrayList<Point>();
 
-        if (! connection.isInsideFromElement(end)) {
+        // +----------------------------------------------------+
+        // | YEP, I KNOW THAT IT IS VERY DIRTY AND NON-OPTIMAL  |
+        // |                I'LL REFACTOR IT                    |
+        // +----------------------------------------------------+
+
+        if (! connection.isInsideFromElement(end) || connection.hasMiddlepoints()) {
             GraphicsElement from = connection.getFrom();
             GraphicsElement to = connection.getTo();
 
-            p = from.getConnectionPointsWith(end, (to != null) ? to.getWidth() / 2 : 0);
+            boolean connectedTo = (to != null);
+
+            int x0;
+            int y0;
+
+            int x1;
+            int y1;
+
+            double a;
+            double b;
+            double c;
+
+            double cosFi;
+            double sinFi;
+
+            Point start = connection.getStart();
+
+            if (connection.hasMiddlepoints()) {
+                x0 = start.getX();
+                y0 = start.getY();
+
+                x1 = connection.getMiddlePoints().get(0).getX();
+                y1 = connection.getMiddlePoints().get(0).getY();
+
+                a = x1 - x0;
+                b = y1 - y0;
+                c = Math.sqrt(a*a + b*b);
+
+                cosFi = a/c;
+                sinFi = b/c;
+
+                p.add(from.getOuterPoint(sinFi, cosFi, true));
+
+                for (Point middlePoint : connection.getMiddlePoints()) {
+                    p.add(middlePoint);
+                }
+
+                x0 = connection.getLastMiddlepoint().getX();
+                y0 = connection.getLastMiddlepoint().getY();
+
+                if (connectedTo) {
+                    x1 = to.getX();
+                    y1 = to.getY();
+                } else {
+                    x1 = end.getX();
+                    y1 = end.getY();
+                }
+
+                a = x1 - x0;
+                b = y1 - y0;
+                c = Math.sqrt(a*a + b*b);
+
+                cosFi = a/c;
+                sinFi = b/c;
+
+                if (connectedTo) {
+                    p.add(to.getOuterPoint(sinFi, cosFi, false));
+                } else {
+                    p.add(new Point(x1, y1));
+                }
+            } else {
+                x0 = start.getX();
+                y0 = start.getY();
+
+                if (connectedTo) {
+                    x1 = to.getX();
+                    y1 = to.getY();
+                } else {
+                    x1 = end.getX();
+                    y1 = end.getY();
+                }
+
+                a = x1 - x0;
+                b = y1 - y0;
+                c = Math.sqrt(a*a + b*b);
+
+                cosFi = a/c;
+                sinFi = b/c;
+
+                p.add(from.getOuterPoint(sinFi, cosFi, true));
+                if (connectedTo) {
+                    p.add(to.getOuterPoint(sinFi, cosFi, false));
+                } else {
+                    p.add(new Point(x1, y1));
+                }
+            }
         }
 
         return p;
@@ -469,13 +537,17 @@ public class GridPanel extends JPanel {
         return draggedElements.contains(element);
     }
 
-    public void startConnection(GraphicsElement element, boolean breaked) {
-        System.out.printf("Connection started on %s%n", element.getType());
-
-        if (breaked) {
-            startBreakedConnection(element);
+    public void addNewMiddlepoint(GraphicsElement element) {
+        if (currentConnection == null) {
+            currentConnection = new BreakedConnection(element);
         } else {
-            startStraightConnection(element);
+            endConnection(element);
+        }
+    }
+
+    public void addNewMiddlepoint(int x, int y) {
+        if (currentConnection != null) {
+            currentConnection.addMiddlePoint(new Point(x, y));
         }
     }
 
@@ -483,7 +555,7 @@ public class GridPanel extends JPanel {
         throw new NotImplementedException();
     }
 
-    private void startStraightConnection(GraphicsElement element) {
+    public void startStraightConnection(GraphicsElement element) {
         currentConnection = new StraightConnection(element);
         updateConnection(element.getPosition());
     }

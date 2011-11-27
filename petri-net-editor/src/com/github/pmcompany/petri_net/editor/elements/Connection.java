@@ -16,9 +16,6 @@ public abstract class Connection {
     private GraphicsElement from;
     private GraphicsElement to;
 
-    private Point arrowPointOne;
-    private Point arrowPointTwo;
-
     public Connection(GraphicsElement from, GraphicsElement to) {
         this.from = from;
         this.to = to;
@@ -42,22 +39,6 @@ public abstract class Connection {
 
     public void setTo(GraphicsElement to) {
         this.to = to;
-    }
-
-    private void setArrowPointOne(int x, int y) {
-        if (arrowPointOne == null) {
-            arrowPointOne = new Point();
-        }
-
-        arrowPointOne.setPosition(x, y);
-    }
-
-    private void setArrowPointTwo(int x, int y) {
-        if (arrowPointTwo == null) {
-            arrowPointTwo = new Point();
-        }
-
-        arrowPointTwo.setPosition(x, y);
     }
 
     public Point getStart() {
@@ -130,16 +111,42 @@ public abstract class Connection {
 
                 inside = (Math.pow(x - x0, 2) + Math.pow(y - y0, 2) <= Math.pow(r, 2));
             } break;
+
+            case TRANSITION: {
+                int w = GraphicsElement.TRANSITION_WIDTH/2;
+                int h = GraphicsElement.TRANSITION_HEIGHT/2;
+
+                inside = (Math.abs(x - x0) <= w) && (Math.abs(y - y0) <= h);
+            } break;
+
+            case MOMENTAL_TRANSITION: {
+                int w = GraphicsElement.MOMENTAL_TRANSITION_WIDTH/2;
+                int h = GraphicsElement.MOMENTAL_TRANSITION_HEIGHT/2;
+
+                inside = (Math.abs(x - x0) <= w) && (Math.abs(y - y0) <= h);
+            } break;
         }
 
         return inside;
     }
 
-    public Point getArrowPointOne() {
-        return arrowPointOne;
+    public boolean hasMiddlepoints() {
+        return false;
     }
 
-    public Point getArrowPointTwo() {
-        return arrowPointTwo;
+    public int countMiddlepoints() {
+        return 0;
+    }
+
+    public Point getFirstMiddlepoint() {
+        return null;
+    }
+
+    public Point getLastMiddlepoint() {
+        return null;
+    }
+
+    public boolean hasOneMiddlepoint() {
+        return false;
     }
 }

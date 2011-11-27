@@ -1,5 +1,7 @@
 package com.github.pmcompany.petri_net.editor.elements;
 
+import java.util.List;
+
 /**
  * @author dector (dector9@gmail.com)
  */
@@ -73,36 +75,30 @@ public class GraphicsElement {
         return height;
     }
 
-    public Point[] getConnectionPointsWith(Point p1, int r1) {
-        Point[] points = new Point[2];
+    public Point getOuterPoint(double sinTheta, double cosTheta, boolean right) {
+        Point p = null;
 
-        int x0 = getX();
-        int y0 = getY();
-        int r0 = getWidth()/2;
+        Point pos = getPosition();
 
-        int x1 = p1.getX();
-        int y1 = p1.getY();
-
-        double a = x1 - x0;
-        double b = y1 - y0;
-        double c = Math.sqrt(a*a + b*b);
-
-        double cosFi = a/c;
-        double sinFi = b/c;
+        int sign;
+        if (right) {
+            sign = 1;
+        } else {
+            sign = -1;
+        }
 
         switch (getType()) {
             case PLACE: {
-                points[0] = new Point((int) (x0 + r0 * cosFi), (int) (y0 + r0 * sinFi));
-                points[1] = new Point(x1 - r1, (int) (y1 - r1 * sinFi));
+                p = new Point((int) (pos.getX() + sign * getWidth()/2 * cosTheta),
+                        (int) (pos.getY() + sign * getWidth()/2 * sinTheta));
             } break;
 
             case TRANSITION:
             case MOMENTAL_TRANSITION: {
-                points[0] = new Point(x0 + r0, (int) (y0 + r0 * sinFi));
-                points[1] = new Point((int) (x1 - r1 * cosFi), (int) (y1 - r1 * sinFi));
+                p = new Point(pos.getX() + sign * getWidth()/2, (int) (pos.getY() + sign * getWidth()/2 * sinTheta));
             }
         }
 
-        return points;
+        return p;
     }
 }

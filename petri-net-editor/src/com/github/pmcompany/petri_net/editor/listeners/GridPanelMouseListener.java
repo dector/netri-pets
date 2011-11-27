@@ -6,7 +6,6 @@ import com.github.pmcompany.petri_net.editor.elements.GraphicsElement;
 import com.github.pmcompany.petri_net.editor.elements.PTNetElements;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
 
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -14,7 +13,7 @@ import java.awt.event.MouseMotionListener;
 /**
  * @author dector (dector9@gmail.com)
  */
-public class GridPanelListener implements MouseListener, MouseMotionListener {
+public class GridPanelMouseListener implements MouseListener, MouseMotionListener {
     private GridPanel gridPanel;
     private static EditorController controller;
 
@@ -22,7 +21,7 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
     private int y0;
     private boolean dragging;
 
-    public GridPanelListener(GridPanel gridPanel) {
+    public GridPanelMouseListener(GridPanel gridPanel) {
         this.gridPanel = gridPanel;
 
         controller = EditorController.getInstance();
@@ -60,9 +59,19 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
                 GraphicsElement element = gridPanel.getElementAt(x, y);
 
                 if (element != null) {
-                    gridPanel.startConnection(element, false);
+                    gridPanel.startStraightConnection(element);
                 }
             } break;
+
+            case BREAKED_CONNECTION: {
+                GraphicsElement element = gridPanel.getElementAt(x, y);
+
+                if (element != null) {
+                    gridPanel.addNewMiddlepoint(element);
+                } else {
+                    gridPanel.addNewMiddlepoint(x, y);
+                }
+            }
         }
 
         x0 = e.getX();
@@ -74,12 +83,19 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
     public void mouseReleased(MouseEvent e) {
         EditorTool tool = EditorController.getInstance().getSelectedTool();
 
-        if (tool == EditorTool.STRAIGHT_CONNECTION || tool == EditorTool.BREAKED_CONNECTION) {
-            gridPanel.endConnection(gridPanel.getElementAt(e.getX(), e.getY()));
-        }
-        else if (dragging) {
-            gridPanel.stopDragElements();
-            dragging = false;
+        switch (tool) {
+            case STRAIGHT_CONNECTION: {
+                gridPanel.endConnection(gridPanel.getElementAt(e.getX(), e.getY()));
+            } break;
+
+            case BREAKED_CONNECTION: break;
+
+            default: {
+                if (dragging) {
+                    gridPanel.stopDragElements();
+                    dragging = false;
+                }
+            }
         }
 
         controller.updateView();
@@ -97,29 +113,33 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
 
         boolean changed = false;
 
-        if (controller.getSelectedTool() != EditorTool.STRAIGHT_CONNECTION &&
-                controller.getSelectedTool() != EditorTool.BREAKED_CONNECTION) {
-
-            GraphicsElement element = gridPanel.getElementAt(e.getX(), e.getY());
-            boolean selected = gridPanel.isSelected(element);
-
-            if (selected && ! dragging) {
-                gridPanel.startDragElements();
-                dragging = true;
-            }
-
-            int[] newCoords = gridPanel.dragElements(x, y, x0, y0);
-            if (x0 != newCoords[0]) {
-                x0 = newCoords[0];
+        switch (controller.getSelectedTool()) {
+            case STRAIGHT_CONNECTION: {
+                gridPanel.updateConnection(x, y);
                 changed = true;
+            } break;
+
+            case BREAKED_CONNECTION: break;
+
+            default: {
+                GraphicsElement element = gridPanel.getElementAt(e.getX(), e.getY());
+                boolean selected = gridPanel.isSelected(element);
+
+                if (selected && ! dragging) {
+                    gridPanel.startDragElements();
+                    dragging = true;
+                }
+
+                int[] newCoords = gridPanel.dragElements(x, y, x0, y0);
+                if (x0 != newCoords[0]) {
+                    x0 = newCoords[0];
+                    changed = true;
+                }
+                if (y0 != newCoords[1]) {
+                    y0 = newCoords[1];
+                    changed = true;
+                }
             }
-            if (y0 != newCoords[1]) {
-                y0 = newCoords[1];
-                changed = true;
-            }
-        } else {
-            gridPanel.updateConnection(x, y);
-            changed = true;
         }
 
         if (changed) {
@@ -127,7 +147,15 @@ public class GridPanelListener implements MouseListener, MouseMotionListener {
         }
     }
 
-    public void mouseMoved(MouseEvent e) {}
+    public void mouseMoved(MouseEvent e) {
+        switch (controller.getSelectedTool()) {
+            case BREAKED_CONNECTION: {
+                gridPanel.updateConnection(e.getX(), e.getY());
+            }
+        }
+
+        controller.updateView();
+    }
 
     private boolean isMultiselectEnabled(MouseEvent e) {
         return e.isShiftDown();
