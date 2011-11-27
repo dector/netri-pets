@@ -229,8 +229,16 @@ public class GridPanel extends JPanel {
 
                 double dx = x1 - x0;
                 double dy = y1 - y0;
+                double c = Math.sqrt(dx*dx + dy*dy);
 
-                double theta = Math.atan(dy / dx);
+//                double theta = Math.atan(dy / dx);
+
+                double theta = Math.acos(dx / c);
+                if (y1 < y0) {
+                    theta = -theta;
+                }
+//                double theta = Math.acos(dx / c);
+//                double theta = Math.asin(dy / c);
 
 //                g.setColor(Color.RED);
 //                g.drawLine(-300, 0, 300, 0);
