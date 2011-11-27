@@ -31,6 +31,8 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
     public void mouseClicked(MouseEvent e) {}
 
     public void mousePressed(MouseEvent e) {
+        gridPanel.requestFocusInWindow();
+
         boolean multiselectEnabled = isMultiselectEnabled(e);
 
         int x = e.getX();
@@ -59,7 +61,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
                 GraphicsElement element = gridPanel.getElementAt(x, y);
 
                 if (element != null) {
-                    gridPanel.startStraightConnection(element);
+                    gridPanel.startNewConnection(element, true);
                 }
             } break;
 
@@ -156,6 +158,8 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
 
         controller.updateView();
     }
+
+
 
     private boolean isMultiselectEnabled(MouseEvent e) {
         return e.isShiftDown();

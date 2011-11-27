@@ -1,5 +1,6 @@
 package com.github.pmcompany.petri_net.editor.elements;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,10 +18,16 @@ public class GraphicsElement {
     private PTNetElements type;
     private Point position;
 
+    private List<Connection> outputConnections;
+    private List<Connection> inputConnections;
+
     public GraphicsElement(PTNetElements type, int x, int y) {
         this.type = type;
 
         position = new Point(x, y);
+
+        outputConnections = new ArrayList<Connection>();
+        inputConnections = new ArrayList<Connection>();
     }
 
     public int getX() {
@@ -100,5 +107,25 @@ public class GraphicsElement {
         }
 
         return p;
+    }
+
+    public void addInputConnection(Connection connection) {
+        if (connection.getTo() == this) {
+            inputConnections.add(connection);
+        }
+    }
+
+    public void addOutputConnection(Connection connection) {
+        if (connection.getFrom() == this) {
+            outputConnections.add(connection);
+        }
+    }
+
+    public List<Connection> getInputConnections() {
+        return inputConnections;
+    }
+
+    public List<Connection> getOutputConnections() {
+        return outputConnections;
     }
 }

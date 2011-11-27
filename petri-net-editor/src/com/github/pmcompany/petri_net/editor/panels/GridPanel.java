@@ -35,6 +35,7 @@ import com.github.pmcompany.petri_net.editor.Grid;
 import com.github.pmcompany.petri_net.editor.Settings;
 import com.github.pmcompany.petri_net.editor.elements.*;
 import com.github.pmcompany.petri_net.editor.elements.Point;
+import com.github.pmcompany.petri_net.editor.listeners.GridPanelKeyListener;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -88,6 +89,9 @@ public class GridPanel extends JPanel {
         GridPanelMouseListener gpl = new GridPanelMouseListener(this);
         addMouseListener(gpl);
         addMouseMotionListener(gpl);
+
+        GridPanelKeyListener kl = new GridPanelKeyListener(this);
+        addKeyListener(kl);
 
         arrow = createArrow();
     }
@@ -543,7 +547,7 @@ public class GridPanel extends JPanel {
 
     public void addNewMiddlepoint(GraphicsElement element) {
         if (currentConnection == null) {
-            currentConnection = new BreakedConnection(element);
+            startNewConnection(element, false);
         } else {
             endConnection(element);
         }
@@ -555,13 +559,23 @@ public class GridPanel extends JPanel {
         }
     }
 
-    private void startBreakedConnection(GraphicsElement element) {
-        throw new NotImplementedException();
+    public void startNewConnection(GraphicsElement element, boolean straight) {
+        if (straight) {
+            startStraightConnection(element);
+        } else {
+            startBreakedConnection(element);
+        }
+
+        element.addOutputConnection(currentConnection);
+        updateConnection(element.getPosition());
     }
 
-    public void startStraightConnection(GraphicsElement element) {
+    private void startBreakedConnection(GraphicsElement element) {
+        currentConnection = new BreakedConnection(element);
+    }
+
+    private void startStraightConnection(GraphicsElement element) {
         currentConnection = new StraightConnection(element);
-        updateConnection(element.getPosition());
     }
 
     public void updateConnection(int endX, int endY) {
@@ -579,12 +593,32 @@ public class GridPanel extends JPanel {
 
             if (! fromType.isSimmilar(toType)) {
                 currentConnection.setTo(element);
-//                currentConnection.countOptimaCoord();
+                element.addInputConnection(currentConnection);
                 connections.add(currentConnection);
             }
         }
 
         currentConnection = null;
         currentConnectionEnd = null;
+    }
+
+    public void deleteSelected() {
+        List<Connection> connectionsToDelete = new ArrayList<Connection>();
+
+        for (GraphicsElement element : selectedElements) {
+            connectionsToDelete.addAll(element.getOutputConnections());
+            connectionsToDelete.addAll(element.getInputConnections());
+        }
+
+        addedElements.removeAll(selectedElements);
+        draggedElements.removeAll(selectedElements);
+        selectedElements.clear();
+
+        for (Connection delConnection : connectionsToDelete) {
+            delConnection.setFrom(null);
+            delConnection.setTo(null);
+        }
+
+        connections.removeAll(connectionsToDelete);
     }
 }

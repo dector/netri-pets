@@ -107,6 +107,7 @@ public class EditorController {
      */
     public void createNewFile() {
         GridPanel gp = new GridPanel(pane.getSize());
+
         gridPanelsList.add(gp);
 
         pane.addTab(UILabels.DEFAULT_FILENAME, gp);

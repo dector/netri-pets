@@ -53,7 +53,8 @@ public class MainMenuBar extends JMenuBar {
         JMenuItem item;
 
         menu = new JMenu(MENU_FILE);
-        item = new JMenuItem(MENU_CREATE, KeyEvent.VK_CONTROL & KeyEvent.VK_N);
+        item = new JMenuItem(MENU_CREATE);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.VK_CONTROL));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 EditorController.getInstance().createNewFile();
@@ -63,7 +64,8 @@ public class MainMenuBar extends JMenuBar {
 
         menu.addSeparator();
 
-        item = new JMenuItem(MENU_QUIT, KeyEvent.VK_CONTROL & KeyEvent.VK_Q);
+        item = new JMenuItem(MENU_QUIT);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.VK_CONTROL));
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
