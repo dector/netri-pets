@@ -54,7 +54,10 @@ public class Settings {
     public static int ELEMENT_TITLE_SIZE = 22;
     public static Color ELEMENT_TITLE_COLOR = Color.BLACK;
 
-    public static Color SELECTION_FILL_COLOR = new Color(51, 204, 255, 220);
+//    public static Color SELECTION_FILL_COLOR = new Color(51, 204, 255, 220);
+//    public static Color SELECTION_FILL_COLOR = new Color(0, 255, 0, 70);
+    public static Color SELECTION_FILL_COLOR = Color.ORANGE;
+//    public static Color ELEMENT_DRAGGING_BORDER_COLOR = Color.ORANGE;
     public static Color ELEMENT_DRAGGING_BORDER_COLOR = Color.ORANGE;
 
     public static Color PLACE_FILL_COLOR = Color.WHITE;
@@ -66,6 +69,7 @@ public class Settings {
     public static Color MOMENTAL_TRANSITION_FILL_COLOR = Color.BLACK;
     public static Color MOMENTAL_TRANSITION_BORDER_COLOR = Color.BLACK;
 
+    public static Color SELECTED_CONNECTION_COLOR = Color.GREEN;
     public static Color PLACE_TRANSITION_CONNECTION_COLOR = Color.RED;
     public static Color TRANSITION_PLACE_CONNECTION_COLOR = Color.BLUE;
 }

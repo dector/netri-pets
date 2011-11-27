@@ -2,6 +2,7 @@ package com.github.pmcompany.petri_net.editor.listeners;
 
 import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.editor.EditorTool;
+import com.github.pmcompany.petri_net.editor.elements.Connection;
 import com.github.pmcompany.petri_net.editor.elements.GraphicsElement;
 import com.github.pmcompany.petri_net.editor.elements.PTNetElements;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
@@ -40,9 +41,16 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
 
         switch (controller.getSelectedTool()) {
             case POINTER: {
-                GraphicsElement element = gridPanel.getElementAt(x, y);
 
-                gridPanel.selectElement(element, multiselectEnabled);       // element == null is NORMAL !
+                Connection connectionSelected;
+                connectionSelected = gridPanel.tryToSelectConnectionAt(x, y, multiselectEnabled);
+
+                if (connectionSelected == null) {
+                    GraphicsElement element = gridPanel.getElementAt(x, y);
+                    gridPanel.selectElement(element, multiselectEnabled);       // element == null is NORMAL !
+                } else {
+                    gridPanel.selectConnection(connectionSelected, multiselectEnabled);
+                }
             } break;
 
             case PLACE: {

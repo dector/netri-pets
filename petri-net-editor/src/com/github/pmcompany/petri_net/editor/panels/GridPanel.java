@@ -43,6 +43,7 @@ import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -66,6 +67,8 @@ public class GridPanel extends JPanel {
     private List<GraphicsElement> draggedElements;
     private List<GraphicsElement> selectedElements;
 
+    private List<Connection> selectedConnections;
+
     private List<Connection> connections;
     private Connection currentConnection;
     private Point currentConnectionEnd;
@@ -78,6 +81,7 @@ public class GridPanel extends JPanel {
     private Stroke connectionStroke;
 
     private Polygon arrow;
+    private static final float CONNECTION_SELECT_EPSILUM = 3f;
 
     /**
      * Create new instance with determined size
@@ -89,6 +93,8 @@ public class GridPanel extends JPanel {
         draggedElements = new ArrayList<GraphicsElement>();
         selectedElements = new ArrayList<GraphicsElement>();
         connections = new ArrayList<Connection>();
+
+        selectedConnections = new ArrayList<Connection>();
 
         ptnet = new PetriNet();
 
@@ -259,7 +265,9 @@ public class GridPanel extends JPanel {
 
     private void drawConnection(Graphics2D g, Connection connection, Point end) {
         PTNetElements elementType = connection.getFrom().getType();
-        if (elementType == PTNetElements.PLACE) {
+        if (selectedConnections.contains(connection)) {
+            g.setColor(Settings.SELECTED_CONNECTION_COLOR);
+        } else if (elementType == PTNetElements.PLACE) {
             g.setColor(Settings.PLACE_TRANSITION_CONNECTION_COLOR);
         } else if (elementType == PTNetElements.TRANSITION || elementType == PTNetElements.MOMENTAL_TRANSITION) {
             g.setColor(Settings.TRANSITION_PLACE_CONNECTION_COLOR);
@@ -318,7 +326,7 @@ public class GridPanel extends JPanel {
     }
 
     private List<Point> getConnectionPoints(Connection connection, Point end) {
-        List<Point> p = new ArrayList<Point>();
+        List<Point> p = new LinkedList<Point>();
 
         // +----------------------------------------------------+
         // | YEP, I KNOW THAT IT IS VERY DIRTY AND NON-OPTIMAL  |
@@ -570,7 +578,14 @@ public class GridPanel extends JPanel {
 
     private void selectOneElement(GraphicsElement element) {
         unselectAllElements();
+        unselectAllConnections();
         selectAnotherElement(element);
+    }
+
+    private void selectOneConnection(Connection connection) {
+        unselectAllConnections();
+        unselectAllElements();
+        selectAnotherConnection(connection);
     }
 
     public void selectElement(GraphicsElement element, boolean multiselect) {
@@ -587,6 +602,7 @@ public class GridPanel extends JPanel {
         } else {
             if (! multiselect) {
                 unselectAllElements();
+                unselectAllConnections();
             }
         }
     }
@@ -595,12 +611,24 @@ public class GridPanel extends JPanel {
         selectedElements.add(element);
     }
 
+    private void selectAnotherConnection(Connection connection) {
+        selectedConnections.add(connection);
+    }
+
     private void unselectElement(GraphicsElement element) {
         selectedElements.remove(element);
     }
 
+    private void unselectConnection(Connection connection) {
+        selectedConnections.remove(connection);
+    }
+
     private void unselectAllElements() {
         selectedElements.clear();
+    }
+
+    private void unselectAllConnections() {
+        selectedConnections.clear();
     }
 
     public boolean isAdded(GraphicsElement element) {
@@ -609,6 +637,10 @@ public class GridPanel extends JPanel {
 
     public boolean isSelected(GraphicsElement element) {
         return selectedElements.contains(element);
+    }
+
+    public boolean isSelected(Connection connection) {
+        return selectedConnections.contains(connection);
     }
 
     public boolean isDragging(GraphicsElement element) {
@@ -720,5 +752,63 @@ public class GridPanel extends JPanel {
 
     public void setSaved(boolean saved) {
         this.saved = saved;
+    }
+
+    public Connection tryToSelectConnectionAt(int x, int y, boolean multiselect) {
+        Connection selected = null;
+
+        List<Point> points;
+        Point p0;
+        Point p1;
+        int dy, dx;
+        double k, b;
+        for (Connection conn : connections) {
+            points = getConnectionPoints(conn, conn.getEnd());
+
+            p0 = points.get(0);
+            for (int i = 1; i < points.size(); i++) {
+                p1 = points.get(i);
+
+                if (p0.getX() <= x && x <= p1.getX() && p0.getY() <= y && y <= p1.getY()
+                  || p0.getX() <= x && x <= p1.getX() && p1.getY() <= y && y <= p0.getY()
+                  || p1.getX() <= x && x <= p0.getX() && p1.getY() <= y && y <= p0.getY()
+                  || p1.getX() <= x && x <= p0.getX() && p0.getY() <= y && y <= p1.getY()) {
+                    dx = p1.getX() - p0.getX();
+                    dy = p1.getY() - p0.getY();
+                    k = (double)dy/dx;
+                    b = p0.getY() - k * p0.getX();
+
+//                    System.out.printf("Seeking for %d:%d with <%s,%s>. Result y=%.3f * x + %f. Diff = %f%n",
+//                            x, y, p0, p1, k, b, Math.abs(k*x + b - y));
+
+                    if (Math.abs(k*x + b - y) < CONNECTION_SELECT_EPSILUM) {
+                        selected = conn;
+                    }
+                }
+
+                p0 = p1;
+            }
+        }
+
+        return selected;
+    }
+
+    public void selectConnection(Connection connection, boolean multiselect) {
+        if (connection != null) {
+            if (multiselect) {
+                if (isSelected(connection)) {
+                    unselectConnection(connection);
+                } else {
+                    selectAnotherConnection(connection);
+                }
+            } else {
+                selectOneConnection(connection);
+            }
+        } else {
+            if (! multiselect) {
+                unselectAllConnections();
+                unselectAllElements();
+            }
+        }
     }
 }
