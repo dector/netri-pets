@@ -42,6 +42,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -68,6 +69,8 @@ public class GridPanel extends JPanel {
     private Stroke elementStroke;
     private Stroke connectionStroke;
 
+    private Polygon arrow;
+
     /**
      * Create new instance with determined size
      *
@@ -88,6 +91,8 @@ public class GridPanel extends JPanel {
         GridPanelListener gpl = new GridPanelListener(this);
         addMouseListener(gpl);
         addMouseMotionListener(gpl);
+
+        arrow = createArrow();
     }
 
     /**
@@ -231,7 +236,6 @@ public class GridPanel extends JPanel {
 //                g.drawLine(-300, 0, 300, 0);
 //                g.drawLine(0, -300, 0, 300);
 
-                Polygon p = createArrow(points);
                 g.translate(x1, y1);
 
 //                g.setColor(Color.BLUE);
@@ -244,8 +248,16 @@ public class GridPanel extends JPanel {
 //                g.drawLine(-300, 0, 300, 0);
 //                g.drawLine(0, -300, 0, 300);
 
+//                g.translate(-x1, -y1);
+//
+//                g.setColor(Color.CYAN);
+//                g.drawLine(-300, 0, 300, 0);
+//                g.drawLine(0, -300, 0, 300);
+
+                g.fillPolygon(arrow);
+                g.rotate(-theta);
                 g.translate(-x1, -y1);
-                g.drawPolygon(p);
+
             }
         } else {
             System.out.println("MiddlePoints");
@@ -265,19 +277,16 @@ public class GridPanel extends JPanel {
         return p;
     }
 
-    private Polygon createArrow(Point[] points) {
+    private Polygon createArrow() {
         Polygon arrow = new Polygon();
 
-        int x1 = points[1].getX();
-        int y1 = points[1].getY();
-
-        arrow.addPoint(x1 - Connection.ARROW_INNER_LENGTH, y1);
-        arrow.addPoint(x1 - Connection.ARROW_OUTER_LENGTH,
-                       (int)(y1 + Connection.ARROW_OUTER_LENGTH * Connection.ARROW_ANGLE_TAN));
-        arrow.addPoint(x1, y1);
-        arrow.addPoint(x1 - Connection.ARROW_OUTER_LENGTH,
-                       (int)(y1 - Connection.ARROW_OUTER_LENGTH * Connection.ARROW_ANGLE_TAN));
-        arrow.addPoint(x1 - Connection.ARROW_INNER_LENGTH, y1);
+        arrow.addPoint(-Connection.ARROW_INNER_LENGTH, 0);
+        arrow.addPoint(-Connection.ARROW_OUTER_LENGTH,
+                       (int)(-Connection.ARROW_OUTER_LENGTH * Connection.ARROW_ANGLE_TAN));
+        arrow.addPoint(0, 0);
+        arrow.addPoint(-Connection.ARROW_OUTER_LENGTH,
+                       (int)(Connection.ARROW_OUTER_LENGTH * Connection.ARROW_ANGLE_TAN));
+        arrow.addPoint(-Connection.ARROW_INNER_LENGTH, 0);
 
         return arrow;
     }
