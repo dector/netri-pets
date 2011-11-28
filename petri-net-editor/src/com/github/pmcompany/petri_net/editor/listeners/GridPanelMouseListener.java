@@ -36,7 +36,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
                     int x = e.getX();
                     int y = e.getY();
 
-                    boolean multiselectEnabled = isMultiselectEnabled(e);
+                    boolean multiselectEnabled = isShiftPressed(e);
 
                     Connection connectionSelected;
                     connectionSelected = gridPanel.tryToSelectConnectionAt(x, y, multiselectEnabled);
@@ -57,7 +57,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
     public void mousePressed(MouseEvent e) {
         gridPanel.requestFocusInWindow();
 
-        boolean multiselectEnabled = isMultiselectEnabled(e);
+        boolean multiselectEnabled = isShiftPressed(e);
 
         int x = e.getX();
         int y = e.getY();
@@ -117,6 +117,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
 
         switch (tool) {
             case STRAIGHT_CONNECTION: {
+                // fix flat connection end
                 gridPanel.endConnection(gridPanel.getElementAt(e.getX(), e.getY()));
             } break;
 
@@ -147,7 +148,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
 
         switch (controller.getSelectedTool()) {
             case STRAIGHT_CONNECTION: {
-                gridPanel.updateConnection(x, y);
+                gridPanel.updateConnection(x, y, isShiftPressed(e));
                 changed = true;
             } break;
 
@@ -182,7 +183,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
     public void mouseMoved(MouseEvent e) {
         switch (controller.getSelectedTool()) {
             case BREAKED_CONNECTION: {
-                gridPanel.updateConnection(e.getX(), e.getY());
+                gridPanel.updateConnection(e.getX(), e.getY(), isShiftPressed(e));
             }
         }
 
@@ -191,7 +192,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
 
 
 
-    private boolean isMultiselectEnabled(MouseEvent e) {
+    private boolean isShiftPressed(MouseEvent e) {
         return e.isShiftDown();
     }
 }

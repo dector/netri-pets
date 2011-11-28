@@ -161,4 +161,14 @@ public abstract class Connection {
     public void setArc(Arc arc) {
         this.arc = arc;
     }
+
+    public Point getLastPoint() {
+        if (hasMiddlepoints()) {
+            return getLastMiddlepoint();
+        } else if (to != null) {
+            return to.getPosition();
+        } else {
+            return from.getPosition();
+        }
+    }
 }

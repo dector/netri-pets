@@ -32,7 +32,6 @@
 package com.github.pmcompany.petri_net.editor.panels;
 
 import com.github.pmcompany.petri_net.common.UILabels;
-import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.model.Arc;
 import com.github.pmcompany.petri_net.model.Node;
 import com.github.pmcompany.petri_net.model.PetriNet;
@@ -42,7 +41,6 @@ import com.github.pmcompany.petri_net.editor.elements.*;
 import com.github.pmcompany.petri_net.editor.elements.Point;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelKeyListener;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
-import com.github.pmcompany.petri_net.model.Place;
 
 import javax.swing.*;
 import java.awt.*;
@@ -711,7 +709,7 @@ public class GridPanel extends JPanel {
         }
 
         element.addOutputConnection(currentConnection);
-        updateConnection(element.getPosition());
+        updateConnection(element.getPosition(), false);
     }
 
     private void startBreakedConnection(GraphicsElement element) {
@@ -722,12 +720,43 @@ public class GridPanel extends JPanel {
         currentConnection = new StraightConnection(element);
     }
 
-    public void updateConnection(int endX, int endY) {
-        updateConnection(new Point(endX, endY));
+    public void updateConnection(int endX, int endY, boolean flat) {
+        updateConnection(new Point(endX, endY), flat);
     }
 
-    public void updateConnection(Point endPosition) {
+    public void updateConnection(Point endPosition, boolean flat) {
+        correctEndPoint(endPosition, flat);
+
         currentConnectionEnd = endPosition;
+    }
+
+    public void correctEndPoint(Point p, boolean flat) {
+        if (flat) {
+            int x0 = currentConnection.getLastPoint().getX();
+            int y0 = currentConnection.getLastPoint().getY();
+
+            int dx = p.getX() - x0;
+            int dy = p.getY() - y0;
+
+            double c = Math.sqrt(dx*dx + dy*dy);
+
+            double cosFi = (double)dx / c;
+            double sinFi = (double)dy / c;
+
+            cosFi = Math.round(cosFi);
+            sinFi = Math.round(sinFi);
+
+            if (cosFi != 0 && sinFi != 0) {
+                if (dy < dx) {
+                    dx = dy;
+                } else if (dx < dy) {
+                    dy = dx;
+                }
+            }
+
+            p.setX((int)(x0 + Math.abs(dx) * cosFi));
+            p.setY((int)(y0 + Math.abs(dy) * sinFi));
+        }
     }
 
     public void endConnection(GraphicsElement element) {
