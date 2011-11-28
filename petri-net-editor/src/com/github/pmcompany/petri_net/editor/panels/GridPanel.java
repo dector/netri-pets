@@ -83,6 +83,7 @@ public class GridPanel extends JPanel {
     private Stroke elementStroke;
     private Font titleFont;
     private Font connectionsFont;
+    private Font tokensFont;
     private Stroke connectionStroke;
 
     private Polygon arrow;
@@ -110,6 +111,7 @@ public class GridPanel extends JPanel {
         connectionStroke = new BasicStroke(Settings.CONNECTION_WIDTH);
         titleFont = new Font(Font.SANS_SERIF, Font.PLAIN, Settings.ELEMENT_TITLE_SIZE);
         connectionsFont = new Font(Font.SANS_SERIF, Font.BOLD, Settings.CONNECTION_TITLE_SIZE);
+        tokensFont = new Font(Font.SANS_SERIF, Font.BOLD, Settings.TOKENS_NUMBER_FONT_SIZE);
 
         GridPanelMouseListener gpl = new GridPanelMouseListener(this);
         addMouseListener(gpl);
@@ -145,6 +147,7 @@ public class GridPanel extends JPanel {
         g.setFont(titleFont);
 
         FontMetrics fm = g.getFontMetrics(titleFont);
+        FontMetrics tfm = g.getFontMetrics(tokensFont);
         int strWidth;
         String title;
 
@@ -186,6 +189,38 @@ public class GridPanel extends JPanel {
                         strWidth = fm.stringWidth(title);
                         g.drawString(title, currElement.getX() - strWidth/2,
                                 elementY - Settings.ELEMENT_TITLE_PADDING);
+
+                        // Draw tokens
+                        g.setColor(Settings.TOKENS_COLOR);
+
+                        int numOfTokens = ptnet.getTokensNumber(currElement.getNode().getId());
+
+                        if (0 < numOfTokens) {
+                            if (numOfTokens <= Settings.TOKENS_BORDER_NUMBER) {
+                                double angle = 2 * Math.PI / numOfTokens;
+                                int tokenRound = 2 * currElement.getWidth()/6;
+
+                                if (numOfTokens == 1) {
+                                    g.fillOval((int)(currElement.getX() - tokenRound/2),
+                                                (int)(currElement.getY() - tokenRound/2),
+                                                tokenRound, tokenRound);
+                                } else {
+                                    int tokenPadding = currElement.getWidth()/4;
+
+                                    for (int i = 1; i <= numOfTokens; i++) {
+                                        g.fillOval((int)(currElement.getX() + tokenPadding * Math.sin(i*angle) - tokenRound/2),
+                                                (int)(currElement.getY() + tokenPadding * Math.cos(i*angle) - tokenRound/2),
+                                                tokenRound, tokenRound);
+                                    }
+                                }
+                            } else {
+                                g.setFont(tokensFont);
+
+                                String tokens = String.valueOf(numOfTokens);
+                                g.drawString(tokens, currElement.getX() - tfm.stringWidth(tokens)/2,
+                                        currElement.getY() + tfm.getHeight()/2);
+                            }
+                        }
                     }
                 } break;
 
