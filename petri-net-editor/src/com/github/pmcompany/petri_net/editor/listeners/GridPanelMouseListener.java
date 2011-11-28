@@ -29,7 +29,30 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
         dragging = false;
     }
 
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            switch (controller.getSelectedTool()) {
+                case POINTER: {
+                    int x = e.getX();
+                    int y = e.getY();
+
+                    boolean multiselectEnabled = isMultiselectEnabled(e);
+
+                    Connection connectionSelected;
+                    connectionSelected = gridPanel.tryToSelectConnectionAt(x, y, multiselectEnabled);
+
+                    if (connectionSelected == null) {
+                        GraphicsElement element = gridPanel.getElementAt(x, y);
+                        if (element != null) {
+                            gridPanel.editElement(element);       // element == null is NORMAL !
+                        }
+                    } else {
+                        gridPanel.editConnection(connectionSelected);
+                    }
+                } break;
+            }
+        }
+    }
 
     public void mousePressed(MouseEvent e) {
         gridPanel.requestFocusInWindow();
@@ -41,7 +64,6 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
 
         switch (controller.getSelectedTool()) {
             case POINTER: {
-
                 Connection connectionSelected;
                 connectionSelected = gridPanel.tryToSelectConnectionAt(x, y, multiselectEnabled);
 

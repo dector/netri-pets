@@ -55,4 +55,7 @@ public final class UILabels {
     public static final String MESSAGE_FILE_WAS_NOT_SAVED_REALLY_CLOSE =
             "File was not saved. All changes will be lost. Really close?";
     public static final String MESSAGE_TITLE_FILE_NOT_SAVED = "File was not saved";
+    public static final String MESSAGE_TITLE_ELEMENT_EDITING = "Element editing";
+    public static final String MESSAGE_INSERT_TOKENS_NUMBER = "Insert new number of tokens";
+    public static final String MESSAGE_INSERT_CONNECTIONS_NUMBER = "Insert new number of connections";
 }

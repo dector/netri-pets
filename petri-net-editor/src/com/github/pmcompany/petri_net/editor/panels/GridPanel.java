@@ -31,6 +31,7 @@
 
 package com.github.pmcompany.petri_net.editor.panels;
 
+import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.model.Arc;
 import com.github.pmcompany.petri_net.model.Node;
 import com.github.pmcompany.petri_net.model.PetriNet;
@@ -40,6 +41,7 @@ import com.github.pmcompany.petri_net.editor.elements.*;
 import com.github.pmcompany.petri_net.editor.elements.Point;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelKeyListener;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
+import com.github.pmcompany.petri_net.model.Place;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,6 +49,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
+
+import static com.github.pmcompany.petri_net.common.UILabels.MESSAGE_INSERT_TOKENS_NUMBER;
+import static com.github.pmcompany.petri_net.common.UILabels.MESSAGE_TITLE_ELEMENT_EDITING;
 
 //todo: Separate to Visual representation and Current P/T net controller
 
@@ -817,5 +822,39 @@ public class GridPanel extends JPanel {
                 unselectAllElements();
             }
         }
+    }
+
+    public void editElement(GraphicsElement element) {
+        if (! element.getNode().isTransition()){
+            int placeId = element.getNode().getId();
+
+            int newTokens = ptnet.getTokensNumber(placeId);
+
+            String input = (String)JOptionPane.showInputDialog(this, MESSAGE_INSERT_TOKENS_NUMBER,
+                    MESSAGE_TITLE_ELEMENT_EDITING, JOptionPane.QUESTION_MESSAGE, null,
+                    null, new Integer(newTokens));
+
+            try {
+                newTokens = Integer.parseInt(input);
+            } catch (NumberFormatException e) {}
+
+            ptnet.updateTokensNumber(placeId, newTokens);
+        }
+    }
+
+    public void editConnection(Connection connection) {
+        Arc arc = connection.getArc();
+
+        int newCount = arc.getCount();
+
+        String input = (String)JOptionPane.showInputDialog(this, MESSAGE_INSERT_TOKENS_NUMBER,
+                MESSAGE_TITLE_ELEMENT_EDITING, JOptionPane.QUESTION_MESSAGE, null,
+                null, new Integer(newCount));
+
+        try {
+            newCount = Integer.parseInt(input);
+        } catch (NumberFormatException e) {}
+
+        ptnet.updateConnectionsNumber(arc, newCount);
     }
 }

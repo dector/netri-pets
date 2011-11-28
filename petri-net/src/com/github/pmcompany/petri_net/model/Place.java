@@ -117,6 +117,12 @@ public class Place extends Node {
         return success;
     }
 
+    void setTokens(int tokens) {
+        if (tokens >= 0) {
+            this.tokens = tokens;
+        }
+    }
+
     @Override
     public boolean isTransition() {
         return false;

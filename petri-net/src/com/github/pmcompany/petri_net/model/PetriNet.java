@@ -160,6 +160,24 @@ public class PetriNet {
         return connections.size();
     }
 
+    public void updateTokensNumber(int placeId, int tokens) {
+        getPlace(placeId).setTokens(tokens);
+    }
+
+    public void updateConnectionsNumber(Arc arc, int connections) {
+        if (connections > 0) {
+            arc.setCount(connections);
+        }
+    }
+
+    public int getTokensNumber(int placeId) {
+        if (places.containsKey(placeId)) {
+            return getPlace(placeId).countTokens();
+        } else {
+            return -1;
+        }
+    }
+
     private int[][] getMatrix(boolean input) {
         int[][] matrix = null;
 
