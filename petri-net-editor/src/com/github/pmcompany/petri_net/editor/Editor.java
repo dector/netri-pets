@@ -31,7 +31,13 @@
 
 package com.github.pmcompany.petri_net.editor;
 
+import com.github.pmcompany.petri_net.common.UILabels;
 import com.github.pmcompany.petri_net.editor.frames.EditorFrame;
+import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
+import com.jtattoo.plaf.smart.SmartLookAndFeel;
+
+import javax.swing.*;
+import java.util.Properties;
 
 /**
  * Executable editor class
@@ -40,7 +46,21 @@ import com.github.pmcompany.petri_net.editor.frames.EditorFrame;
  * @version 1.0
  */
 public class Editor {
+    public static void setLNF() {
+        try {
+            Properties props = new Properties();
+            props.put("logoString", UILabels.PROJECT_NAME);
+
+            AcrylLookAndFeel.setCurrentTheme(props);
+
+            UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+        } catch (Exception e) {
+            System.out.println("Unable to set LnF");
+        }
+    }
+
     public static void main(String[] args) {
+        setLNF();
         EditorFrame editor = new EditorFrame();
         editor.showGUI();
     }

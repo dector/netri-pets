@@ -38,6 +38,8 @@ package com.github.pmcompany.petri_net.common;
  * @version 0.1
  */
 public final class UILabels {
+    public static final String PROJECT_NAME = "Petri Nets";
+
     public static final String TITLE = "Petri Nets Editor And Simulator";
 
     public static final String TITLE_SEPARATOR = " :: ";

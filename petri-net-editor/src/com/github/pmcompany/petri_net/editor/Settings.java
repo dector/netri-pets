@@ -60,9 +60,10 @@ public class Settings {
 
 //    public static Color SELECTION_FILL_COLOR = new Color(51, 204, 255, 220);
 //    public static Color SELECTION_FILL_COLOR = new Color(0, 255, 0, 70);
-    public static Color SELECTION_FILL_COLOR = Color.ORANGE;
+//    public static Color SELECTION_FILL_COLOR = Color.ORANGE;
+    public static Color SELECTION_FILL_COLOR = new Color(255, 128, 0, 128);
 //    public static Color ELEMENT_DRAGGING_BORDER_COLOR = Color.ORANGE;
-    public static Color ELEMENT_DRAGGING_BORDER_COLOR = Color.ORANGE;
+    public static Color ELEMENT_DRAGGING_BORDER_COLOR = new Color(255, 128, 0, 128);
 
     public static Color PLACE_FILL_COLOR = Color.WHITE;
     public static Color PLACE_BORDER_COLOR = Color.BLACK;
