@@ -16,8 +16,6 @@ public class ElementsBar extends PalleteToolBar {
     public ElementsBar() {
         JToggleButton button;
 
-        ImageLoader il = ImageLoader.getInstance();
-
         String imagesDir = DIR_DATA + DIR_IMAGES;
 
         button = new JToggleButton(new ImageIcon(imagesDir + IMAGE_POINTER));

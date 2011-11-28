@@ -695,9 +695,9 @@ public class GridPanel extends JPanel {
         }
     }
 
-    public void addNewMiddlepoint(int x, int y) {
+    public void addNewMiddlepoint(int x, int y, boolean flat) {
         if (currentConnection != null) {
-            currentConnection.addMiddlePoint(new Point(x, y));
+            currentConnection.addMiddlePoint(correctEndPoint(new Point(x, y)));
         }
     }
 
@@ -725,38 +725,40 @@ public class GridPanel extends JPanel {
     }
 
     public void updateConnection(Point endPosition, boolean flat) {
-        correctEndPoint(endPosition, flat);
+        if (flat) {
+            correctEndPoint(endPosition);
+        }
 
         currentConnectionEnd = endPosition;
     }
 
-    public void correctEndPoint(Point p, boolean flat) {
-        if (flat) {
-            int x0 = currentConnection.getLastPoint().getX();
-            int y0 = currentConnection.getLastPoint().getY();
+    public Point correctEndPoint(Point p) {
+        int x0 = currentConnection.getLastPoint().getX();
+        int y0 = currentConnection.getLastPoint().getY();
 
-            int dx = p.getX() - x0;
-            int dy = p.getY() - y0;
+        int dx = p.getX() - x0;
+        int dy = p.getY() - y0;
 
-            double c = Math.sqrt(dx*dx + dy*dy);
+        double c = Math.sqrt(dx*dx + dy*dy);
 
-            double cosFi = (double)dx / c;
-            double sinFi = (double)dy / c;
+        double cosFi = (double)dx / c;
+        double sinFi = (double)dy / c;
 
-            cosFi = Math.round(cosFi);
-            sinFi = Math.round(sinFi);
+        cosFi = Math.round(cosFi);
+        sinFi = Math.round(sinFi);
 
-            if (cosFi != 0 && sinFi != 0) {
-                if (dy < dx) {
-                    dx = dy;
-                } else if (dx < dy) {
-                    dy = dx;
-                }
+        if (cosFi != 0 && sinFi != 0) {
+            if (dy < dx) {
+                dx = dy;
+            } else if (dx < dy) {
+                dy = dx;
             }
-
-            p.setX((int)(x0 + Math.abs(dx) * cosFi));
-            p.setY((int)(y0 + Math.abs(dy) * sinFi));
         }
+
+        p.setX((int)(x0 + Math.abs(dx) * cosFi));
+        p.setY((int)(y0 + Math.abs(dy) * sinFi));
+
+        return p;
     }
 
     public void endConnection(GraphicsElement element) {

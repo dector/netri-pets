@@ -101,7 +101,7 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
                 if (element != null) {
                     gridPanel.addNewMiddlepoint(element);
                 } else {
-                    gridPanel.addNewMiddlepoint(x, y);
+                    gridPanel.addNewMiddlepoint(x, y, isShiftPressed(e));
                 }
             }
         }

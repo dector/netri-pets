@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Netri Pets">
+    <output-path>$PROJECT_DIR$/out/artifacts/Netri_Pets</output-path>
+    <root id="archive" name="Netri_Pets.jar">
+      <element id="module-output" name="petri-net" />
+      <element id="module-output" name="petri-net-editor" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="dir-copy" path="$PROJECT_DIR$/data" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/JTattoo.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
