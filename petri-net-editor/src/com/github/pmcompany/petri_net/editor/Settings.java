@@ -77,4 +77,15 @@ public class Settings {
     public static Color SELECTED_CONNECTION_COLOR = Color.ORANGE;
     public static Color PLACE_TRANSITION_CONNECTION_COLOR = Color.RED;
     public static Color TRANSITION_PLACE_CONNECTION_COLOR = Color.BLUE;
+
+
+    public static String DIR_DATA = "data/";
+    public static String DIR_IMAGES = "images/";
+
+    public static String IMAGE_POINTER = "pointer.png";
+    public static String IMAGE_PLACE = "place.png";
+    public static String IMAGE_TRANSITION = "transition.png";
+    public static String IMAGE_MTRANSITION = "mtransition.png";
+    public static String IMAGE_STRAIGHT_CONNECTION = "straight_connection.png";
+    public static String IMAGE_BREAKED_CONNECTION = "breaked_connection.png";
 }

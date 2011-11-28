@@ -2,6 +2,8 @@ package com.github.pmcompany.petri_net.editor.bars;
 
 import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.editor.EditorTool;
+import static com.github.pmcompany.petri_net.editor.Settings.*;
+import com.sun.deploy.ui.ImageLoader;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -14,7 +16,11 @@ public class ElementsBar extends PalleteToolBar {
     public ElementsBar() {
         JToggleButton button;
 
-        button = new JToggleButton("*<");
+        ImageLoader il = ImageLoader.getInstance();
+
+        String imagesDir = DIR_DATA + DIR_IMAGES;
+
+        button = new JToggleButton(new ImageIcon(imagesDir + IMAGE_POINTER));
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -25,7 +31,7 @@ public class ElementsBar extends PalleteToolBar {
         add(button);
         setActiveButton(button);
 
-        button = new JToggleButton("P");
+        button = new JToggleButton(new ImageIcon(imagesDir + IMAGE_PLACE));
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -35,7 +41,7 @@ public class ElementsBar extends PalleteToolBar {
         });
         add(button);
 
-        button = new JToggleButton("T");
+        button = new JToggleButton(new ImageIcon(imagesDir + IMAGE_TRANSITION));
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -45,7 +51,7 @@ public class ElementsBar extends PalleteToolBar {
         });
         add(button);
 
-        button = new JToggleButton("t=0");
+        button = new JToggleButton(new ImageIcon(imagesDir + IMAGE_MTRANSITION));
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -55,7 +61,7 @@ public class ElementsBar extends PalleteToolBar {
         });
         add(button);
 
-        button = new JToggleButton("-->");
+        button = new JToggleButton(new ImageIcon(imagesDir + IMAGE_STRAIGHT_CONNECTION));
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -65,7 +71,7 @@ public class ElementsBar extends PalleteToolBar {
         });
         add(button);
 
-        button = new JToggleButton("|_>");
+        button = new JToggleButton(new ImageIcon(imagesDir + IMAGE_BREAKED_CONNECTION));
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
