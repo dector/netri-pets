@@ -99,5 +99,18 @@ public class MainMenuBar extends JMenuBar {
         menu.add(item);
 
         add(menu);
+
+        menu = new JMenu(MENU_SIMULATION);
+
+        item = new JMenuItem(MENU_MATRIXES);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.VK_CONTROL));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().showMatrixes();
+            }
+        });
+        menu.add(item);
+
+        add(menu);
     }
 }

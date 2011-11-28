@@ -51,6 +51,9 @@ public final class UILabels {
     public static final String MENU_CLOSE = "Close..";
     public static final String MENU_QUIT = "Quit..";
 
+    public static final String MENU_SIMULATION = "Simulation";
+    public static final String MENU_MATRIXES = "Matrixes";
+
 
     public static final String MESSAGE_FILE_WAS_NOT_SAVED_REALLY_CLOSE =
             "File was not saved. All changes will be lost. Really close?";

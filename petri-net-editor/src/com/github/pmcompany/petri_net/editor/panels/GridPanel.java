@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import static com.github.pmcompany.petri_net.common.UILabels.MESSAGE_INSERT_CONNECTIONS_NUMBER;
 import static com.github.pmcompany.petri_net.common.UILabels.MESSAGE_INSERT_TOKENS_NUMBER;
 import static com.github.pmcompany.petri_net.common.UILabels.MESSAGE_TITLE_ELEMENT_EDITING;
 
@@ -882,7 +883,7 @@ public class GridPanel extends JPanel {
 
         int newCount = arc.getCount();
 
-        String input = (String)JOptionPane.showInputDialog(this, MESSAGE_INSERT_TOKENS_NUMBER,
+        String input = (String)JOptionPane.showInputDialog(this, MESSAGE_INSERT_CONNECTIONS_NUMBER,
                 MESSAGE_TITLE_ELEMENT_EDITING, JOptionPane.QUESTION_MESSAGE, null,
                 null, new Integer(newCount));
 
@@ -891,5 +892,9 @@ public class GridPanel extends JPanel {
         } catch (NumberFormatException e) {}
 
         ptnet.updateConnectionsNumber(arc, newCount);
+    }
+
+    public PetriNet getPetriNet() {
+        return ptnet;
     }
 }

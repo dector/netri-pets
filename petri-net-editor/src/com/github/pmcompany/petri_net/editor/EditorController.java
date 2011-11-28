@@ -33,11 +33,13 @@ package com.github.pmcompany.petri_net.editor;
 
 import static com.github.pmcompany.petri_net.common.UILabels.*;
 
-import com.github.pmcompany.petri_net.editor.menu.TabPopupMenu;
+import com.github.pmcompany.petri_net.editor.frames.MatrixesDialog;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
+import com.github.pmcompany.petri_net.model.PetriNet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -190,5 +192,15 @@ public class EditorController {
         } else {
             frame.setTitle(TITLE);
         }
+    }
+
+    public void showMatrixes() {
+        MatrixesDialog matrixesDialog = new MatrixesDialog(new Dimension(500, 400));
+        matrixesDialog.setModal(true);
+        matrixesDialog.setVisible(true);
+    }
+
+    public PetriNet getPertriNext() {
+        return gridPanelsList.get(pane.getSelectedIndex()).getPetriNet();        // Be aware!!!
     }
 }
