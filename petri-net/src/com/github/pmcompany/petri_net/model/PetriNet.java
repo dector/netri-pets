@@ -164,6 +164,11 @@ public class PetriNet {
         getPlace(placeId).setTokens(tokens);
     }
 
+    public void updateTransitionTime(int transitionId, double time) {
+        getTransition(transitionId).setTime(time);
+    }
+
+
     public void updateConnectionsNumber(Arc arc, int connections) {
         if (connections > 0) {
             arc.setCount(connections);
@@ -173,6 +178,14 @@ public class PetriNet {
     public int getTokensNumber(int placeId) {
         if (places.containsKey(placeId)) {
             return getPlace(placeId).countTokens();
+        } else {
+            return -1;
+        }
+    }
+
+    public double getTransitionTime(int transitionId) {
+        if (transitions.containsKey(transitionId)) {
+            return getTransition(transitionId).getTime();
         } else {
             return -1;
         }

@@ -60,5 +60,6 @@ public final class UILabels {
     public static final String MESSAGE_TITLE_FILE_NOT_SAVED = "File was not saved";
     public static final String MESSAGE_TITLE_ELEMENT_EDITING = "Element editing";
     public static final String MESSAGE_INSERT_TOKENS_NUMBER = "Insert new number of tokens";
+    public static final String MESSAGE_INSERT_TIME_VALUE = "Insert new time";
     public static final String MESSAGE_INSERT_CONNECTIONS_NUMBER = "Insert new number of connections";
 }

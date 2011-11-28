@@ -31,6 +31,7 @@
 
 package com.github.pmcompany.petri_net.editor.panels;
 
+import com.github.pmcompany.petri_net.common.UILabels;
 import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.model.Arc;
 import com.github.pmcompany.petri_net.model.Node;
@@ -861,10 +862,9 @@ public class GridPanel extends JPanel {
     }
 
     public void editElement(GraphicsElement element) {
+        int nodeId = element.getNode().getId();
         if (! element.getNode().isTransition()){
-            int placeId = element.getNode().getId();
-
-            int newTokens = ptnet.getTokensNumber(placeId);
+            int newTokens = ptnet.getTokensNumber(nodeId);
 
             String input = (String)JOptionPane.showInputDialog(this, MESSAGE_INSERT_TOKENS_NUMBER,
                     MESSAGE_TITLE_ELEMENT_EDITING, JOptionPane.QUESTION_MESSAGE, null,
@@ -874,7 +874,19 @@ public class GridPanel extends JPanel {
                 newTokens = Integer.parseInt(input);
             } catch (NumberFormatException e) {}
 
-            ptnet.updateTokensNumber(placeId, newTokens);
+            ptnet.updateTokensNumber(nodeId, newTokens);
+        } else {
+            double time = ptnet.getTransitionTime(nodeId);
+
+            String input = (String)JOptionPane.showInputDialog(this, UILabels.MESSAGE_INSERT_TIME_VALUE,
+                    MESSAGE_TITLE_ELEMENT_EDITING, JOptionPane.QUESTION_MESSAGE, null,
+                    null, new Double(time));
+
+            try {
+                time = Double.parseDouble(input);
+            } catch (NumberFormatException e) {}
+
+            ptnet.updateTransitionTime(nodeId, time);
         }
     }
 
