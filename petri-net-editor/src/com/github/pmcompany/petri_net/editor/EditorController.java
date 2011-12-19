@@ -34,9 +34,11 @@ package com.github.pmcompany.petri_net.editor;
 import static com.github.pmcompany.petri_net.common.UILabels.*;
 
 import com.github.pmcompany.petri_net.editor.frames.MatrixesDialog;
+import com.github.pmcompany.petri_net.editor.frames.TreeDialog;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
 import com.github.pmcompany.petri_net.model.PetriNet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import sun.reflect.generics.tree.Tree;
 
 import javax.swing.*;
 import java.awt.*;
@@ -198,6 +200,15 @@ public class EditorController {
         MatrixesDialog matrixesDialog = new MatrixesDialog(new Dimension(500, 400));
         matrixesDialog.setModal(true);
         matrixesDialog.setVisible(true);
+    }
+
+    /**
+     * Swhos attainability tree dialog.
+     */
+    public void showTree(){
+        TreeDialog treeDialog = new TreeDialog(new Dimension(400, 600));
+        treeDialog.setModal(true);
+        treeDialog.setVisible(true);
     }
 
     public PetriNet getPertriNext() {

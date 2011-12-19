@@ -111,6 +111,14 @@ public class MainMenuBar extends JMenuBar {
         });
         menu.add(item);
 
+        item = new JMenuItem(MENU_TREE);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().showTree();
+            }
+        });
+        menu.add(item);
+        
         add(menu);
     }
 }

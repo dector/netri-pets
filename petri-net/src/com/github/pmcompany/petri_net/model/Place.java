@@ -132,4 +132,8 @@ public class Place extends Node {
     public String toString() {
         return PLACE_NAME + getId();
     }
+
+    public boolean hasTokens() {
+        return tokens>0;
+    }
 }

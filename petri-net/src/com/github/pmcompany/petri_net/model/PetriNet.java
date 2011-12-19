@@ -1,5 +1,7 @@
 package com.github.pmcompany.petri_net.model;
 
+import com.github.pmcompany.petri_net.model.util.PetriNetState;
+
 import java.util.*;
 
 /**
@@ -329,7 +331,7 @@ public class PetriNet {
         return titles;
     }
 
-    public double[] getTransitionsVector() {
+    public double[] getTransitionsTimes() {
         double[] tVector = null;
 
         if (getTransitionsCount() != 0) {
@@ -345,7 +347,43 @@ public class PetriNet {
                 tVector[index++] = transition.getTime();
             }
         }
-
         return tVector;
     }
+        
+    public ArrayList<Transition> getEnabledTransitions() {
+        ArrayList<Transition> enabledTransitions = new ArrayList<Transition>();
+        Set<Integer> keyset = transitions.keySet();
+        for(Integer key: keyset){
+            Transition trans = transitions.get(key);
+            Collection<Place> inputs = trans.getInputPlaces();
+            
+            boolean allInputsHasTokens = true;
+            for(Place p: inputs){
+                if (!p.hasTokens()) {
+                    allInputsHasTokens = false;
+                    break;
+                }
+            }
+            if (allInputsHasTokens){
+                enabledTransitions.add(trans);
+            }
+        }
+        return enabledTransitions;
+    }
+
+    public PetriNetState getState() {
+        return new PetriNetState(getPlacesVector());
+    }
+    
+    public void setState(PetriNetState state){
+        Set<Integer> keyset = places.keySet();
+        Integer[] keys = null;
+        keyset.toArray(keys);
+        Arrays.sort(keys);
+        int c=0;
+        for(Integer key: keys){
+            places.get(key).setTokens(state.getTokens(c++));
+        }
+    }
+
 }

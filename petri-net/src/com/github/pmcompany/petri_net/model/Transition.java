@@ -31,6 +31,9 @@
 
 package com.github.pmcompany.petri_net.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Entity that describes Time transition in P/T net
  *
@@ -107,5 +110,14 @@ public class Transition extends Node {
     @Override
     public String toString() {
         return TRANSITION_NAME + getId();
+    }
+
+    public Collection<Place> getInputPlaces() {
+        ArrayList<Place> res = new ArrayList<Place>();
+        for(Arc connection: getInputArcs()){
+            //This is a really bad thing
+            res.add((Place)connection.getInputNode());
+        }
+        return res;
     }
 }

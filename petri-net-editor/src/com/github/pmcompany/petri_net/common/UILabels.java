@@ -55,6 +55,7 @@ public final class UILabels {
 
     public static final String MENU_SIMULATION = "Simulation";
     public static final String MENU_MATRIXES = "Matrixes";
+    public static final String MENU_TREE = "Attainability tree";
 
 
     public static final String MESSAGE_FILE_WAS_NOT_SAVED_REALLY_CLOSE =

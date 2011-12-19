@@ -3,7 +3,6 @@ package com.github.pmcompany.petri_net.editor.frames;
 import com.github.pmcompany.petri_net.editor.EditorController;
 import com.github.pmcompany.petri_net.model.PetriNet;
 
-import javax.sound.midi.ControllerEventListener;
 import javax.swing.*;
 import java.awt.*;
 
@@ -52,7 +51,7 @@ public class MatrixesDialog extends JDialog {
 
         textArea.append("Transitions:\n");
         textArea.append(Vector.print(net.getTransitionsTitlesVector()));
-        textArea.append(Vector.print(net.getTransitionsVector()));
+        textArea.append(Vector.print(net.getTransitionsTimes()));
         textArea.append("\n");
     }
 }
