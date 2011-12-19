@@ -52,7 +52,7 @@ public class PetriNet {
         place.clearAllConnections();
 
         if (id == lastId) {
-            lastPlaceId = (! idList.isEmpty()) ? idList.getLast() : 0;
+            lastPlaceId = (!idList.isEmpty()) ? idList.getLast() : 0;
         }
 
         return place;
@@ -87,7 +87,7 @@ public class PetriNet {
         transition.clearAllConnections();
 
         if (id == lastId) {
-            lastTransitionId = (! idList.isEmpty()) ? idList.getLast() : 0;
+            lastTransitionId = (!idList.isEmpty()) ? idList.getLast() : 0;
         }
 
         return transition;
@@ -227,7 +227,7 @@ public class PetriNet {
                         matrix[tIndex][pIndex] += arc.getCount();
                     }
                 } else {
-                    if (! arc.isInput()) {        // Is input to place
+                    if (!arc.isInput()) {        // Is input to place
                         tIndex = transitionsList.indexOf(outputNode.getId());
                         pIndex = placesList.indexOf(inputNode.getId());
 
@@ -281,7 +281,7 @@ public class PetriNet {
             int index = 0;
 
             Place place;
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 place = iter.next();
 
                 titles[index++] = place.toString();
@@ -301,7 +301,7 @@ public class PetriNet {
             int index = 0;
 
             Place place;
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 place = iter.next();
 
                 pVector[index++] = place.countTokens();
@@ -321,7 +321,7 @@ public class PetriNet {
             int index = 0;
 
             Transition transition;
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 transition = iter.next();
 
                 titles[index++] = transition.toString();
@@ -341,7 +341,7 @@ public class PetriNet {
             int index = 0;
 
             Transition transition;
-            while(iter.hasNext()) {
+            while (iter.hasNext()) {
                 transition = iter.next();
 
                 tVector[index++] = transition.getTime();
@@ -349,22 +349,13 @@ public class PetriNet {
         }
         return tVector;
     }
-        
+
     public ArrayList<Transition> getEnabledTransitions() {
         ArrayList<Transition> enabledTransitions = new ArrayList<Transition>();
         Set<Integer> keyset = transitions.keySet();
-        for(Integer key: keyset){
+        for (Integer key : keyset) {
             Transition trans = transitions.get(key);
-            Collection<Place> inputs = trans.getInputPlaces();
-            
-            boolean allInputsHasTokens = true;
-            for(Place p: inputs){
-                if (!p.hasTokens()) {
-                    allInputsHasTokens = false;
-                    break;
-                }
-            }
-            if (allInputsHasTokens){
+            if (trans.isEnabled()) {
                 enabledTransitions.add(trans);
             }
         }
@@ -374,14 +365,14 @@ public class PetriNet {
     public PetriNetState getState() {
         return new PetriNetState(getPlacesVector());
     }
-    
-    public void setState(PetriNetState state){
+
+    public void setState(PetriNetState state) {
         Set<Integer> keyset = places.keySet();
-        Integer[] keys = null;
+        Integer[] keys = new Integer[keyset.size()];
         keyset.toArray(keys);
         Arrays.sort(keys);
-        int c=0;
-        for(Integer key: keys){
+        int c = 0;
+        for (Integer key : keys) {
             places.get(key).setTokens(state.getTokens(c++));
         }
     }

@@ -31,14 +31,11 @@
 
 package com.github.pmcompany.petri_net.editor;
 
-import static com.github.pmcompany.petri_net.common.UILabels.*;
-
 import com.github.pmcompany.petri_net.editor.frames.MatrixesDialog;
 import com.github.pmcompany.petri_net.editor.frames.TreeDialog;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
 import com.github.pmcompany.petri_net.model.PetriNet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import sun.reflect.generics.tree.Tree;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,6 +46,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.pmcompany.petri_net.common.UILabels.*;
+
 /**
  * Editor Controllel
  *
@@ -56,15 +55,21 @@ import java.util.List;
  * @version 0.1
  */
 public class EditorController {
-    /** Singletone instance */
+    /**
+     * Singletone instance
+     */
     private static EditorController instance;
 
-    /** Managed tabbed pane */
+    /**
+     * Managed tabbed pane
+     */
     private JTabbedPane pane;
 
     private JFrame frame;
 
-    /** List of opened P/T nets */
+    /**
+     * List of opened P/T nets
+     */
     private List<GridPanel> gridPanelsList;
 
     private EditorTool tool;
@@ -133,7 +138,7 @@ public class EditorController {
         gridPanelsList.add(gp);
 
         pane.addTab(DEFAULT_FILENAME, gp);
-        pane.setSelectedIndex(pane.getTabCount()-1);
+        pane.setSelectedIndex(pane.getTabCount() - 1);
         pane.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -172,7 +177,7 @@ public class EditorController {
     public void closeFile() {
         int index = pane.getSelectedIndex();
 
-        if (! gridPanelsList.get(index).isSaved()) {
+        if (!gridPanelsList.get(index).isSaved()) {
             int choose =
                     JOptionPane.showOptionDialog(frame, MESSAGE_FILE_WAS_NOT_SAVED_REALLY_CLOSE,
                             MESSAGE_TITLE_FILE_NOT_SAVED, JOptionPane.YES_NO_OPTION,
@@ -182,7 +187,8 @@ public class EditorController {
                 case 0: {
                     pane.removeTabAt(index);
                     updateFrameTitle();
-                } break;
+                }
+                break;
             }
         }
     }
@@ -205,8 +211,8 @@ public class EditorController {
     /**
      * Swhos attainability tree dialog.
      */
-    public void showTree(){
-        TreeDialog treeDialog = new TreeDialog(new Dimension(400, 600));
+    public void showTree() {
+        TreeDialog treeDialog = new TreeDialog(new Dimension(400, 600), gridPanelsList.get(pane.getSelectedIndex()).getPetriNet());
         treeDialog.setModal(true);
         treeDialog.setVisible(true);
     }

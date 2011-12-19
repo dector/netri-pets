@@ -39,7 +39,6 @@ import java.util.Collection;
  *
  * @author dector (dector9@gmail.com)
  * @version 1.0
- *
  * @see Node
  * @see Place
  * @see Arc
@@ -49,14 +48,16 @@ public class Transition extends Node {
 
     private static final double DEFAULT_TIME = 0d;
 
-    /** Transition time */
+    /**
+     * Transition time
+     */
     private double time;
 
     /**
      * Create new instance with specified parameters
      *
-     * @param id    Transition id
-     * @param time  Transition time
+     * @param id   Transition id
+     * @param time Transition time
      */
     Transition(int id, double time) {
         super(id);
@@ -68,7 +69,7 @@ public class Transition extends Node {
      * Create new instance with specified id.<br />
      * Transition will be momentary by default
      *
-     * @param id  Transition id
+     * @param id Transition id
      */
     Transition(int id) {
         this(id, DEFAULT_TIME);
@@ -77,7 +78,7 @@ public class Transition extends Node {
     /**
      * Return Transition time
      *
-     * @return  Transition time
+     * @return Transition time
      */
     public double getTime() {
         return time;
@@ -86,7 +87,7 @@ public class Transition extends Node {
     /**
      * Sets new Transition time
      *
-     * @param time  new Transition time
+     * @param time new Transition time
      */
     void setTime(double time) {
         this.time = time;
@@ -114,10 +115,42 @@ public class Transition extends Node {
 
     public Collection<Place> getInputPlaces() {
         ArrayList<Place> res = new ArrayList<Place>();
-        for(Arc connection: getInputArcs()){
+        for (Arc connection : getInputArcs()) {
             //This is a really bad thing
-            res.add((Place)connection.getInputNode());
+            res.add((Place) connection.getOutputNode());
         }
         return res;
+    }
+
+    public Collection<Place> getOutputPlaces() {
+        ArrayList<Place> res = new ArrayList<Place>();
+        for (Arc connection : getOutputArcs()) {
+            //This is a really bad thing
+            res.add((Place) connection.getInputNode());
+        }
+        return res;
+    }
+
+    public boolean isEnabled() {
+        Collection<Place> inputs = getInputPlaces();
+        for (Place p : inputs) {
+            if (!p.hasTokens()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void Execute() {
+        if (isEnabled()) {
+            Collection<Place> places = getInputPlaces();
+            for (Place p : places) {
+                p.pickTokens(1);
+            }
+            places = getOutputPlaces();
+            for (Place p : places) {
+                p.putTokens(1);
+            }
+        }
     }
 }

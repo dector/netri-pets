@@ -1,5 +1,8 @@
 package com.github.pmcompany.petri_net.editor.frames;
 
+import com.github.pmcompany.petri_net.model.PetriNet;
+import com.github.pmcompany.petri_net.model.util.AttainabilityTree;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,9 +11,12 @@ import java.awt.*;
  * Date: 12.12.11
  * Time: 17:12
  */
-public class TreeDialog extends JDialog{
-    public TreeDialog(Dimension size){
+public class TreeDialog extends JDialog {
+    public TreeDialog(Dimension size, PetriNet net) {
         setSize(size);
+        AttainabilityTree tree = new AttainabilityTree();
+        tree.build(net);
 
+        System.out.println(tree);
     }
 }
