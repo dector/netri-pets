@@ -6,5 +6,5 @@ package com.github.pmcompany.petri_net.model.util;
  * Time: 12:26
  */
 public enum AttainabilityTreeNodeType {
-    BOUNDARY, INTERNAL, DUPLICATE, INFINITE, TERMINAL
+    BOUNDARY, INTERNAL, DUPLICATE, INFINITE, TEMPORARY, TERMINAL
 }

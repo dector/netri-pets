@@ -32,7 +32,7 @@ public class AttainabilityTreeNode {
         node.setParent(this);
     }
 
-    private void setParent(AttainabilityTreeNode parent) {
+    public void setParent(AttainabilityTreeNode parent) {
         this.parent = parent;
     }
 
@@ -82,5 +82,13 @@ public class AttainabilityTreeNode {
         sb.append("\t");
         sb.append(type.toString());
         return sb.toString();
+    }
+
+    public Collection<AttainabilityTreeNode> getChildren() {
+        return children;
+    }
+
+    public void removeChild(AttainabilityTreeNode node) {
+        children.remove(node);
     }
 }

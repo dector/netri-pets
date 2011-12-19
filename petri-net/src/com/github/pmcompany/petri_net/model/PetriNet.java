@@ -350,12 +350,28 @@ public class PetriNet {
         return tVector;
     }
 
-    public ArrayList<Transition> getEnabledTransitions() {
+    public ArrayList<Transition> getEnabledTimeTransitions() {
         ArrayList<Transition> enabledTransitions = new ArrayList<Transition>();
         Set<Integer> keyset = transitions.keySet();
         for (Integer key : keyset) {
             Transition trans = transitions.get(key);
-            if (trans.isEnabled()) {
+            if (trans.isEnabled() && !trans.isMomentary()) {
+                enabledTransitions.add(trans);
+            }
+        }
+        return enabledTransitions;
+    }
+
+    public boolean isTemporary() {
+        return !getEnabledImmediateTransitions().isEmpty();
+    }
+
+    public ArrayList<Transition> getEnabledImmediateTransitions() {
+        ArrayList<Transition> enabledTransitions = new ArrayList<Transition>();
+        Set<Integer> keyset = transitions.keySet();
+        for (Integer key : keyset) {
+            Transition trans = transitions.get(key);
+            if (trans.isEnabled() && trans.isMomentary()) {
                 enabledTransitions.add(trans);
             }
         }

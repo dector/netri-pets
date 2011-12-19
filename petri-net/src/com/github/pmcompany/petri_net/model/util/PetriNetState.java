@@ -87,4 +87,15 @@ public class PetriNetState implements Comparable<PetriNetState> {
     public String toString() {
         return Arrays.toString(state);
     }
+
+    public boolean[] getCoverageMap(PetriNetState state) {
+        boolean[] res = new boolean[this.state.length];
+        Arrays.fill(res, false);
+        for (int i = 0; i < n; i++) {
+            if (this.state[i] > state.state[i]) {
+                res[i] = true;
+            }
+        }
+        return res;
+    }
 }

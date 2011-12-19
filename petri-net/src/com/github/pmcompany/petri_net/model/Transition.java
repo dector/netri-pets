@@ -117,7 +117,8 @@ public class Transition extends Node {
         ArrayList<Place> res = new ArrayList<Place>();
         for (Arc connection : getInputArcs()) {
             //This is a really bad thing
-            res.add((Place) connection.getOutputNode());
+            int n = connection.getCount();
+            for (int i = 0; i < n; i++) res.add((Place) connection.getOutputNode());
         }
         return res;
     }
@@ -126,15 +127,17 @@ public class Transition extends Node {
         ArrayList<Place> res = new ArrayList<Place>();
         for (Arc connection : getOutputArcs()) {
             //This is a really bad thing
-            res.add((Place) connection.getInputNode());
+            int n = connection.getCount();
+            for (int i = 0; i < n; i++) res.add((Place) connection.getInputNode());
         }
         return res;
     }
 
     public boolean isEnabled() {
-        Collection<Place> inputs = getInputPlaces();
-        for (Place p : inputs) {
-            if (!p.hasTokens()) {
+        for (Arc connection : getInputArcs()) {
+            //This is a really bad thing
+            int n = connection.getCount();
+            if (((Place) connection.getOutputNode()).countTokens() < n) {
                 return false;
             }
         }
