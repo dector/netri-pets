@@ -208,6 +208,9 @@ public class EditorController {
         matrixesDialog.setVisible(true);
     }
 
+    public void step() {
+        gridPanelsList.get(pane.getSelectedIndex()).step();
+    }
     /**
      * Swhos attainability tree dialog.
      */

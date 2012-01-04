@@ -154,6 +154,8 @@ public class Transition extends Node {
             for (Place p : places) {
                 p.putTokens(1);
             }
+
+            System.out.println(toString() + " executed.");
         }
     }
 }

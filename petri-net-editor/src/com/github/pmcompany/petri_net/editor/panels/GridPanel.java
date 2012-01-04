@@ -41,6 +41,7 @@ import com.github.pmcompany.petri_net.editor.elements.*;
 import com.github.pmcompany.petri_net.editor.elements.Point;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelKeyListener;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
+import com.github.pmcompany.petri_net.model.util.Simulator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,6 +87,8 @@ public class GridPanel extends JPanel {
     private Font tokensFont;
     private Stroke connectionStroke;
 
+    private Simulator simulator;
+    
     private Polygon arrow;
     private static final float CONNECTION_SELECT_EPSILUM = 3f;
 
@@ -121,6 +124,8 @@ public class GridPanel extends JPanel {
         addKeyListener(kl);
 
         arrow = createArrow();
+
+        simulator = new Simulator(ptnet);
     }
 
     /**
@@ -939,5 +944,10 @@ public class GridPanel extends JPanel {
 
     public PetriNet getPetriNet() {
         return ptnet;
+    }
+
+    public void step() {
+        simulator.step();
+        repaint();
     }
 }

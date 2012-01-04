@@ -77,7 +77,7 @@ public class AttainabilityTreeNode {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append((parent != null) ? "M" + parent.getId() : "root");
+        sb.append((parent != null) ? "M" + parent.getId() : " ");
         sb.append("\t");
         sb.append(state.toString());
         sb.append("\t");

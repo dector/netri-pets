@@ -354,6 +354,23 @@ public class PetriNet {
         return tVector;
     }
 
+    public Map<Double, List<Transition>> getEnabledTimeTransitionsMap() {
+        Map<Double, List<Transition>> map = new LinkedHashMap<Double, List<Transition>>();
+
+        double time;
+        for (Transition t : getEnabledTimeTransitions()) {
+            time = t.getTime();
+
+            if (! map.containsKey(time)) {
+                map.put(time, new LinkedList<Transition>());
+            }
+
+            map.get(time).add(t);
+        }
+
+        return map;
+    }
+
     public ArrayList<Transition> getEnabledTimeTransitions() {
         ArrayList<Transition> enabledTransitions = new ArrayList<Transition>();
         Set<Integer> keyset = transitions.keySet();
@@ -397,4 +414,56 @@ public class PetriNet {
         }
     }
 
+    public void simulate(double maxTime) {
+        double simTime = 0;
+
+//        Map<PetriNetState, Integer> statesFreq = new LinkedHashMap<PetriNetState, Integer>();
+//        Map<PetriNetState, Double> statesStayTime = new LinkedHashMap<PetriNetState, Double>();
+//        Map<PetriNetState, Double> statesReturnTime = new LinkedHashMap<PetriNetState, Double>();
+//        Map<PetriNetState, Map.Entry<Boolean, Double>> statesInOutComeTime =
+//                new LinkedHashMap<PetriNetState, Map.Entry<Boolean, Double>>();
+
+        boolean done = false;
+
+//        List<Transition> waitingTransitionsList = new LinkedList<Transition>();
+        Map<Double, List<Transition>> waitingTransitions = new LinkedHashMap<Double, List<Transition>>();
+                                
+//        double actionTime = 0;
+        while(!done && simTime < maxTime) {
+//            PetriNetState state = getState();
+//
+//            if (! statesFreq.containsKey(state)) {
+//                statesFreq.put(state, 1);
+//                statesStayTime.put(state, 0d);
+//                statesReturnTime.put(state, 0d);
+//                statesInOutComeTime.put(state, new HashMap.SimpleEntry<Boolean, Double>(true, simTime));
+//            }
+
+
+
+            // ===================
+
+//            Map<Double, List<Transition>> enabledTrans = getEnabledTimeTransitionsMap();
+//            List<Double> transitionsTimes = new LinkedList<Double>(enabledTrans.keySet());
+//            Collections.sort(transitionsTimes);
+//
+//            List<Transition> transitionsToExecute;
+//            for (double trTime : transitionsTimes) {
+//                transitionsToExecute = enabledTrans.get(trTime);
+//
+//                if (transitionsToExecute.size() > 1) {
+//
+//                } else {
+//                    transitionsToExecute.get(0).execute();
+//                }
+//
+//                simTime += actionTime;
+//                timePassed += actionTime;
+//            }
+//
+//            for (Transition t : getEnabledImmediateTransitions()) {
+//                t.execute();
+//            }
+        }
+    }
 }

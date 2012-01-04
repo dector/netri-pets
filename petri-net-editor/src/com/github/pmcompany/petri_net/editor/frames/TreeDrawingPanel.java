@@ -62,7 +62,7 @@ public class TreeDrawingPanel extends JPanel {
                 if (currentNode.hasParent) {
                     int x1 = distance * (i);
                     int y1 = level * LEVEl_H;
-                    int x2 = (currentNode.parrentOffset);
+                    int x2 = currentNode.parrentOffset;
                     int y2 = (level - 1) * LEVEl_H;
 
                     g.setColor(Color.black);

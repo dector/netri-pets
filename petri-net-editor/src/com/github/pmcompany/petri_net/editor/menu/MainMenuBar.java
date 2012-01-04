@@ -118,6 +118,15 @@ public class MainMenuBar extends JMenuBar {
             }
         });
         menu.add(item);
+
+        item = new JMenuItem(MENU_STEP);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.VK_CONTROL));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().step();
+            }
+        });
+        menu.add(item);
         
         add(menu);
     }

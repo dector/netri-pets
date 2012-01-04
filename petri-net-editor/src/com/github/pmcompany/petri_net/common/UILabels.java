@@ -55,6 +55,7 @@ public final class UILabels {
 
     public static final String MENU_SIMULATION = "Simulation";
     public static final String MENU_MATRIXES = "Matrixes";
+    public static final String MENU_STEP = "Step";
     public static final String MENU_TREE = "Attainability tree";
 
 
