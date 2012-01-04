@@ -533,8 +533,8 @@ public class GridPanel extends JPanel {
         Node node = null;
         switch (type) {
             case PLACE: node = ptnet.createNewPlace(); break;
-            case TRANSITION:
-            case MOMENTAL_TRANSITION: node = ptnet.createNewTransition();
+            case TRANSITION: node = ptnet.createNewTransition(1.0); break;
+            case MOMENTAL_TRANSITION: node = ptnet.createNewTransition(); break;
         }
 
         element.setNode(node);

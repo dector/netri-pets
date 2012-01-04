@@ -69,9 +69,13 @@ public class PetriNet {
     }
 
     public Transition createNewTransition() {
+        return createNewTransition(0);
+    }
+
+    public Transition createNewTransition(double time) {
         lastTransitionId++;
 
-        Transition transition = new Transition(lastTransitionId);
+        Transition transition = new Transition(lastTransitionId, time);
         transitions.put(lastTransitionId, transition);
 
         return transition;
