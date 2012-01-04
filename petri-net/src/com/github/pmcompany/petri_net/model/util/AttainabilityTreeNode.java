@@ -1,8 +1,8 @@
 package com.github.pmcompany.petri_net.model.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import com.github.pmcompany.petri_net.model.Transition;
+
+import java.util.*;
 
 /**
  * User: vitaliy
@@ -16,11 +16,16 @@ public class AttainabilityTreeNode {
     private Collection<AttainabilityTreeNode> children;
     private boolean[] infinities;
 
+    private List<Transition> transitionVector;
+    private int id;
+
     public AttainabilityTreeNode(PetriNetState state) {
         setState(state);
         children = new ArrayList<AttainabilityTreeNode>();
         infinities = new boolean[state.getPlacesCount()];
         Arrays.fill(infinities, false);
+
+        transitionVector = new LinkedList<Transition>();
     }
 
     public AttainabilityTreeNode getParent() {
@@ -72,16 +77,36 @@ public class AttainabilityTreeNode {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.hashCode());
+        sb.append((parent != null) ? "M" + parent.getId() : "root");
         sb.append("\t");
         sb.append(state.toString());
         sb.append("\t");
-        sb.append(Arrays.toString(infinities));
+        sb.append(getPath());
         sb.append("\t");
-        sb.append((parent != null) ? parent.hashCode() : "root");
+        sb.append("M" + getId());
         sb.append("\t");
         sb.append(type.toString());
         return sb.toString();
+    }
+
+    public String getName() {
+        return "M" + getId() + " " + state.toString();
+    }
+
+    public String getPath() {
+        return transitionVector.toString();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void addTransition(Transition t) {
+        transitionVector.add(t);
     }
 
     public Collection<AttainabilityTreeNode> getChildren() {

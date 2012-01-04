@@ -144,7 +144,7 @@ public class Transition extends Node {
         return true;
     }
 
-    public void Execute() {
+    public void execute() {
         if (isEnabled()) {
             Collection<Place> places = getInputPlaces();
             for (Place p : places) {

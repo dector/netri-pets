@@ -55,10 +55,19 @@ public class TreeDrawingPanel extends JPanel {
                 }
                 i++;
                 drawCircle(g, distance * (i), level * LEVEl_H, c);
+
+                g.setColor(Color.black);
+                g.drawString(currentNode.toString(), distance * (i), level * LEVEl_H);
+
                 if (currentNode.hasParent) {
+                    int x1 = distance * (i);
+                    int y1 = level * LEVEl_H;
+                    int x2 = (currentNode.parrentOffset);
+                    int y2 = (level - 1) * LEVEl_H;
+
                     g.setColor(Color.black);
-                    g.drawLine(distance * (i), level * LEVEl_H,
-                            (currentNode.parrentOffset), (level - 1) * LEVEl_H);
+                    g.drawLine(x1, y1, x2, y2);
+                    g.drawString(currentNode.pathToThisLife(), x1 + (x2-x1)/2, y1 + (y2-y1)/2);
                 }
                 for (AttainabilityTreeNode chNode : currentNode.treeNode.getChildren()) {
                     childQueue.add(new GraphicsNode(chNode, true, i * distance));
@@ -83,5 +92,13 @@ class GraphicsNode {
         this.treeNode = treeNode;
         this.hasParent = hasParent;
         this.parrentOffset = parrentOffset;
+    }
+
+    public String toString() {
+        return treeNode.getName();
+    }
+
+    public String pathToThisLife() {
+        return treeNode.getPath();
     }
 }
