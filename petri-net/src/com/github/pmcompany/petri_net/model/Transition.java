@@ -134,12 +134,16 @@ public class Transition extends Node {
     }
 
     public boolean isEnabled() {
-        for (Arc connection : getInputArcs()) {
-            //This is a really bad thing
-            int n = connection.getCount();
-            if (((Place) connection.getOutputNode()).countTokens() < n) {
-                return false;
+        if (! getInputArcs().isEmpty()) {
+            for (Arc connection : getInputArcs()) {
+                //This is a really bad thing
+                int n = connection.getCount();
+                if (((Place) connection.getOutputNode()).countTokens() < n) {
+                    return false;
+                }
             }
+        } else {
+            return false;
         }
         return true;
     }

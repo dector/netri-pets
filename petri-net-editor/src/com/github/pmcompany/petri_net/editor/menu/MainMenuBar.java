@@ -119,10 +119,21 @@ public class MainMenuBar extends JMenuBar {
         });
         menu.add(item);
 
+        menu.addSeparator();
+
         item = new JMenuItem(MENU_SIMULATE);
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                EditorController.getInstance().simulate();
+                EditorController.getInstance().simulateByTime();
+            }
+        });
+        menu.add(item);
+
+        item = new JMenuItem(MENU_TOGGLE_SIMULATION);
+        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.VK_CONTROL));
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().toggleSimulate();
             }
         });
         menu.add(item);
@@ -140,6 +151,16 @@ public class MainMenuBar extends JMenuBar {
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 EditorController.getInstance().printStatistics();
+            }
+        });
+        menu.add(item);
+
+        menu.addSeparator();
+
+        item = new JMenuItem(MENU_RESET);
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().reset();
             }
         });
         menu.add(item);

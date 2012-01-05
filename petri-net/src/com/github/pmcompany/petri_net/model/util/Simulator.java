@@ -125,7 +125,7 @@ public class Simulator {
                 }
                 //    d) Decrease transitions waiting time
                 for (double time : waitingTransitions.keySet()) {
-                    waitingTransitions.put(time - trTime, waitingTransitions.remove(time));
+                    waitingTransitions.put(time - trTime, waitingTransitions.get(time));
                 }
             }
         } else {
@@ -164,6 +164,8 @@ public class Simulator {
     }
 
     private void deleteNotEnabled(List<Transition> enabledTransitions) {
+        List<Double> timesToRemove = new LinkedList<Double>();
+
         for (double time : waitingTransitions.keySet()) {
             List<Transition> wTrans = waitingTransitions.get(time);
 
@@ -179,8 +181,13 @@ public class Simulator {
             wTrans.removeAll(transToRemove);
 
             if (wTrans.size() == 0) {
-                waitingTransitions.remove(time);
+                timesToRemove.add(time);
+
             }
+        }
+
+        for (double time : timesToRemove) {
+            waitingTransitions.remove(time);
         }
     }
 

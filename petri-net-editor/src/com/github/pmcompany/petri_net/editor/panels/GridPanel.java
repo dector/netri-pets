@@ -41,6 +41,8 @@ import com.github.pmcompany.petri_net.editor.elements.*;
 import com.github.pmcompany.petri_net.editor.elements.Point;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelKeyListener;
 import com.github.pmcompany.petri_net.editor.listeners.GridPanelMouseListener;
+import com.github.pmcompany.petri_net.model.Transition;
+import com.github.pmcompany.petri_net.model.util.PetriNetState;
 import com.github.pmcompany.petri_net.model.util.Simulator;
 
 import javax.swing.*;
@@ -88,6 +90,8 @@ public class GridPanel extends JPanel {
     private Stroke connectionStroke;
 
     private Simulator simulator;
+    private boolean simulationMode;
+    private PetriNetState startState;
     
     private Polygon arrow;
     private static final float CONNECTION_SELECT_EPSILUM = 3f;
@@ -241,7 +245,12 @@ public class GridPanel extends JPanel {
                     if (dragging) {
                         g.setColor(Settings.ELEMENT_DRAGGING_BORDER_COLOR);
                     } else {
-                        g.setColor(Settings.TRANSITION_BORDER_COLOR);
+                        if (isSimulationMode()
+                                && ((Transition)(currElement.getNode())).isEnabled()) {
+                            g.setColor(Settings.ENABLED_TRANSITION_BORDER_COLOR);
+                        } else {
+                            g.setColor(Settings.TRANSITION_BORDER_COLOR);
+                        }
                     }
 
                     g.drawRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
@@ -299,6 +308,12 @@ public class GridPanel extends JPanel {
             drawConnection(g, currentConnection, currentConnectionEnd);
         }
         // ========== [END] DRAW P/T NET
+
+        // System drawing
+        if (isSimulationMode()) {
+            g.setColor(Color.red);
+            g.drawString("Simulation", 10, 10);
+        }
 
     }
 
@@ -944,18 +959,49 @@ public class GridPanel extends JPanel {
         return ptnet;
     }
 
+    public void simulate(double time) {
+        if (! isSimulationMode()) {
+            simulate();
+        }
+
+        simulator.simulate(time);
+    }
+
     public void simulate() {
         simulator = new Simulator(ptnet);
+        simulationMode = true;
+
+        startState = ptnet.getState();
+
+        repaint();
+    }
+
+    public void stopSimulation() {
+        simulationMode = false;
+
+        repaint();
     }
 
     public void step() {
-        if (simulator != null) {
+        if (isSimulationMode() && simulator != null) {
             simulator.step();
             repaint();
         }
     }
 
+    public boolean isSimulationMode() {
+        return simulationMode;
+    }
+
     public void printStatistics() {
         simulator.showStatistics();
+    }
+
+    public void reset() {
+        if (startState != null) {
+            ptnet.setState(startState);
+
+            simulate();
+        }
     }
 }

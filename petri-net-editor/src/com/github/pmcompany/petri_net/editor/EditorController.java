@@ -212,6 +212,10 @@ public class EditorController {
         gridPanelsList.get(pane.getSelectedIndex()).simulate();
     }
 
+    public void stopSimulation() {
+        gridPanelsList.get(pane.getSelectedIndex()).stopSimulation();
+    }
+
     public void step() {
         gridPanelsList.get(pane.getSelectedIndex()).step();
     }
@@ -231,5 +235,31 @@ public class EditorController {
 
     public PetriNet getPertriNext() {
         return gridPanelsList.get(pane.getSelectedIndex()).getPetriNet();        // Be aware!!!
+    }
+
+    public void toggleSimulate() {
+        GridPanel panel = gridPanelsList.get(pane.getSelectedIndex());
+
+        if (panel.isSimulationMode()) {
+            panel.stopSimulation();
+        } else {
+            panel.simulate();
+        }
+    }
+
+    public void reset() {
+        gridPanelsList.get(pane.getSelectedIndex()).reset();
+    }
+
+    public void simulateByTime() {
+        try {
+            double maxSimTime = Double.parseDouble(JOptionPane.showInputDialog("Input simulation time"));
+
+            gridPanelsList.get(pane.getSelectedIndex()).simulate(maxSimTime);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Please, input number",
+                    "Not number value", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 }
