@@ -124,8 +124,6 @@ public class GridPanel extends JPanel {
         addKeyListener(kl);
 
         arrow = createArrow();
-
-        simulator = new Simulator(ptnet);
     }
 
     /**
@@ -946,8 +944,18 @@ public class GridPanel extends JPanel {
         return ptnet;
     }
 
+    public void simulate() {
+        simulator = new Simulator(ptnet);
+    }
+
     public void step() {
-        simulator.step();
-        repaint();
+        if (simulator != null) {
+            simulator.step();
+            repaint();
+        }
+    }
+
+    public void printStatistics() {
+        simulator.showStatistics();
     }
 }

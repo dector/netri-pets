@@ -15,7 +15,17 @@ public class Simulator {
     private Map<Double, List<Transition>> waitingTransitions;
 
     private double simTime;
+    private double trTime;
     private boolean done;
+
+    private int iterations;
+
+    private Map<PetriNetState, Integer> statesFreq;
+    private Map<PetriNetState, Double> statesStayTime;
+    private Map<PetriNetState, Double> statesReturnTime;
+    private Map<PetriNetState, Double> statesOutComeTime;
+
+    private PetriNetState prevState;
 
     public Simulator(PetriNet ptnet) {
         this.ptnet = ptnet;
@@ -25,16 +35,33 @@ public class Simulator {
 
     public void init() {
         simTime = 0;
+        trTime = 0;
         done = false;
+
+        iterations = 0;
 
         waitingTransitions = new LinkedHashMap<Double, List<Transition>>();
         waitingTransitionsList = new LinkedList<Transition>();
+
+        statesFreq = new LinkedHashMap<PetriNetState, Integer>();
+        statesStayTime = new LinkedHashMap<PetriNetState, Double>();
+        statesReturnTime = new LinkedHashMap<PetriNetState, Double>();
+        statesOutComeTime = new LinkedHashMap<PetriNetState, Double>();
+
+        prevState = ptnet.getState();
+        processState(prevState);
     }
 
     public void simulate(double maxTime) {
+        System.out.printf("Starting simulation for %.3f%n", maxTime);
+
         while(!done && simTime < maxTime) {
             step();
         }
+
+        System.out.printf("Simulation %s%n", done ? "terminated" : "finished");
+
+        showStatistics();
     }
 
     public void step() {
@@ -67,7 +94,7 @@ public class Simulator {
 
             if (! transitionsTimes.isEmpty()) {
                 // 4) Select the fastest transition
-                double trTime = transitionsTimes.get(0);
+                trTime = transitionsTimes.get(0);
                 List<Transition> willBeNowExecutedTransitions = waitingTransitions.get(trTime);
 
                 Transition trToExecute;
@@ -86,11 +113,10 @@ public class Simulator {
                 // 6) Execute transition
                 //    a) Execute
                 trToExecute.execute();
-//                    state = getState();
-//
-//                    if ()
                 //    b) Add transition execution time to simulation time
                 simTime += trTime;
+                processState(ptnet.getState());
+                iterations++;
                 //    c) Delete executed transition from waiting
                 waitingTransitionsList.remove(trToExecute);
                 waitingTransitions.get(trTime).remove(transitionIndex);
@@ -115,6 +141,28 @@ public class Simulator {
         System.out.printf("[END] Simulation step. TIME: %.3f, STATE: %s %n", simTime, ptnet.getState());
     }
 
+    private void processState(PetriNetState state) {
+        if (! statesFreq.containsKey(state)) {
+            statesFreq.put(state, 0);
+            statesStayTime.put(state, 0d);
+            statesReturnTime.put(state, 0d);
+            statesOutComeTime.put(state, simTime);
+        }
+
+        statesFreq.put(state, statesFreq.get(state) + 1);
+
+        if (prevState.equals(state)) {
+            statesStayTime.put(state, statesStayTime.get(state) + trTime);
+        } else {
+            statesStayTime.put(prevState, statesStayTime.get(prevState) + trTime);
+
+            statesOutComeTime.put(prevState, simTime - trTime);
+
+            statesReturnTime.put(state, statesReturnTime.get(state) + simTime - statesOutComeTime.get(state));
+            prevState = state;
+        }
+    }
+
     private void deleteNotEnabled(List<Transition> enabledTransitions) {
         for (double time : waitingTransitions.keySet()) {
             List<Transition> wTrans = waitingTransitions.get(time);
@@ -134,5 +182,23 @@ public class Simulator {
                 waitingTransitions.remove(time);
             }
         }
+    }
+
+    public void showStatistics() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(":: Simulation statistics ::")
+                .append("\nSIMULATION TIME: ").append(simTime)
+                .append("\nITERATIONS: ").append(iterations)
+                .append("\nSTATES:");
+
+        for (PetriNetState state : statesFreq.keySet()) {
+            sb.append("\n").append(state)
+                    .append('\t').append(statesFreq.get(state))
+                    .append('\t').append(statesStayTime.get(state))
+                    .append('\t').append(statesReturnTime.get(state));
+        }
+
+        System.out.println(sb.toString());
     }
 }

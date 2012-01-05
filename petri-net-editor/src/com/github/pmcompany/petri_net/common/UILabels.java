@@ -53,9 +53,11 @@ public final class UILabels {
     public static final String MENU_CLOSE = "Close..";
     public static final String MENU_QUIT = "Quit..";
 
-    public static final String MENU_SIMULATION = "Simulation";
+    public static final String MENU_TOOLS = "Tools";
     public static final String MENU_MATRIXES = "Matrixes";
+    public static final String MENU_SIMULATE = "Simulate";
     public static final String MENU_STEP = "Step";
+    public static final String MENU_STATISTICS = "Print stats";
     public static final String MENU_TREE = "Attainability tree";
 
 

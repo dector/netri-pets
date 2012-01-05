@@ -208,11 +208,20 @@ public class EditorController {
         matrixesDialog.setVisible(true);
     }
 
+    public void simulate() {
+        gridPanelsList.get(pane.getSelectedIndex()).simulate();
+    }
+
     public void step() {
         gridPanelsList.get(pane.getSelectedIndex()).step();
     }
+
+    public void printStatistics() {
+        gridPanelsList.get(pane.getSelectedIndex()).printStatistics();
+    }
+
     /**
-     * Swhos attainability tree dialog.
+     * Shows attainability tree dialog.
      */
     public void showTree() {
         TreeDialog treeDialog = new TreeDialog(new Dimension(400, 600), gridPanelsList.get(pane.getSelectedIndex()).getPetriNet());

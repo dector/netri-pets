@@ -98,4 +98,14 @@ public class PetriNetState implements Comparable<PetriNetState> {
         }
         return res;
     }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj.hashCode() == this.hashCode();
+    }
 }
