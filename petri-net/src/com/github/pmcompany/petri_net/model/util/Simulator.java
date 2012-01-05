@@ -26,6 +26,7 @@ public class Simulator {
     private Map<PetriNetState, Double> statesOutComeTime;
 
     private PetriNetState prevState;
+    private List<Transition> lastExecuted;
 
     public Simulator(PetriNet ptnet) {
         this.ptnet = ptnet;
@@ -50,6 +51,8 @@ public class Simulator {
 
         prevState = ptnet.getState();
         processState(prevState);
+
+        lastExecuted = new LinkedList<Transition>();
     }
 
     public void simulate(double maxTime) {
@@ -69,6 +72,8 @@ public class Simulator {
 
         // 1) Get all enabled time transitions
         List<Transition> enabledTransitions = ptnet.getEnabledTimeTransitions();
+
+        lastExecuted.clear();
 
         if (! enabledTransitions.isEmpty()) {
             System.out.println("Enabled transitions: " + enabledTransitions);
@@ -113,6 +118,7 @@ public class Simulator {
                 // 6) Execute transition
                 //    a) Execute
                 trToExecute.execute();
+                lastExecuted.add(trToExecute);
                 //    b) Add transition execution time to simulation time
                 simTime += trTime;
                 processState(ptnet.getState());
@@ -136,6 +142,7 @@ public class Simulator {
 
         for (Transition t : ptnet.getEnabledImmediateTransitions()) {
             t.execute();
+            lastExecuted.add(t);
         }
 
         System.out.printf("[END] Simulation step. TIME: %.3f, STATE: %s %n", simTime, ptnet.getState());
@@ -207,5 +214,9 @@ public class Simulator {
         }
 
         System.out.println(sb.toString());
+    }
+
+    public boolean wasExecuted(Transition transition) {
+        return lastExecuted.contains(transition);
     }
 }

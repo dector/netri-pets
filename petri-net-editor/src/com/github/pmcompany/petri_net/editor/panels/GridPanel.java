@@ -238,7 +238,11 @@ public class GridPanel extends JPanel {
                     if (selected) {
                         g.setColor(Settings.SELECTION_FILL_COLOR);
                     } else {
-                        g.setColor(Settings.TRANSITION_FILL_COLOR);
+                        if (isSimulationMode() && simulator.wasExecuted((Transition)(currElement.getNode()))) {
+                            g.setColor(Settings.EXECUTED_TRANSITION_FILL_COLOR);
+                        } else {
+                            g.setColor(Settings.TRANSITION_FILL_COLOR);
+                        }
                     }
                     g.fillRect(elementX, elementY, GraphicsElement.TRANSITION_WIDTH, GraphicsElement.TRANSITION_HEIGHT);
 
@@ -272,7 +276,11 @@ public class GridPanel extends JPanel {
                     if (selected) {
                         g.setColor(Settings.SELECTION_FILL_COLOR);
                     } else {
-                        g.setColor(Settings.MOMENTAL_TRANSITION_FILL_COLOR);
+                        if (isSimulationMode() && simulator.wasExecuted((Transition)(currElement.getNode()))) {
+                            g.setColor(Settings.EXECUTED_TRANSITION_FILL_COLOR);
+                        } else {
+                            g.setColor(Settings.MOMENTAL_TRANSITION_FILL_COLOR);
+                        }
                     }
                     g.fillRect(elementX, elementY, GraphicsElement.MOMENTAL_TRANSITION_WIDTH, GraphicsElement.MOMENTAL_TRANSITION_HEIGHT);
 
