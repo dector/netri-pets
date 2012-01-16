@@ -134,9 +134,18 @@ public class Simulator {
                     waitingTransitions.remove(trTime);
                 }
                 //    d) Decrease transitions waiting time
+                List<Double> timeOne = new ArrayList<Double>();
+                List<List<Transition>> timeTwo = new ArrayList<List<Transition>>();
+
                 for (double time : waitingTransitions.keySet()) {
-                    waitingTransitions.put(time - trTime, waitingTransitions.get(time));
+                    timeOne.add(time - trTime);
+                    timeTwo.add(waitingTransitions.get(time));
                 }
+
+                for (int i = 0; i < timeOne.size(); i++) {
+                    waitingTransitions.put(timeOne.get(i), timeTwo.get(i));
+                }
+
             }
         } else {
             done = true;
@@ -253,7 +262,7 @@ public class Simulator {
                     .append('\t').append(freqNum)
                     .append('\t').append(String.format("%.3f", (double)freqNum / iterations * 100)).append("%")
                     .append('\t').append(stayTime)
-                    .append('\t').append(String.format("%.3f", stayTime / iterations * 100)).append("%")
+                    .append('\t').append(String.format("%.3f", stayTime / simTime * 100)).append("%")
                     .append('\t').append(String.format("%.3f", stayTime / freqNum))
                     .append('\t').append(freqRetNum)
                     .append('\t').append(retTime)

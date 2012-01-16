@@ -9,13 +9,13 @@ import java.util.List;
  * @author dector (dector9@gmail.com)
  */
 public class GraphicsElement {
-    public static final int PLACE_SIZE = 50;
+    public static final int PLACE_SIZE = 25;
 
-    public static final int TRANSITION_WIDTH = 30;
-    public static final int TRANSITION_HEIGHT = 50;
+    public static final int TRANSITION_WIDTH = 15;
+    public static final int TRANSITION_HEIGHT = 25;
 
-    public static final int MOMENTAL_TRANSITION_WIDTH = 15;
-    public static final int MOMENTAL_TRANSITION_HEIGHT = 50;
+    public static final int MOMENTAL_TRANSITION_WIDTH = 8;
+    public static final int MOMENTAL_TRANSITION_HEIGHT = 25;
 
     private PTNetElements type;
     private Point position;
