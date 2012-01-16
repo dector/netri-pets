@@ -20,6 +20,7 @@ public class Simulator {
 
     private int iterations;
 
+    private Map<Map.Entry<PetriNetState, PetriNetState>, Integer> statesComeFreq;
     private Map<PetriNetState, Integer> statesFreq;
     private Map<PetriNetState, Double> statesStayTime;
     private Map<PetriNetState, Double> statesReturnTime;
@@ -44,6 +45,7 @@ public class Simulator {
         waitingTransitions = new LinkedHashMap<Double, List<Transition>>();
         waitingTransitionsList = new LinkedList<Transition>();
 
+        statesComeFreq = new LinkedHashMap<Map.Entry<PetriNetState, PetriNetState>, Integer>();
         statesFreq = new LinkedHashMap<PetriNetState, Integer>();
         statesStayTime = new LinkedHashMap<PetriNetState, Double>();
         statesReturnTime = new LinkedHashMap<PetriNetState, Double>();
@@ -156,6 +158,14 @@ public class Simulator {
             statesOutComeTime.put(state, simTime);
         }
 
+        Map.Entry<PetriNetState, PetriNetState> statePair
+                = new LinkedHashMap.SimpleEntry<PetriNetState, PetriNetState>(prevState, state);
+        if (! statesComeFreq.containsKey(statePair)) {
+            statesComeFreq.put(statePair, 1);
+        } else {
+            statesComeFreq.put(statePair, statesComeFreq.get(statePair) + 1);
+        }
+
         statesFreq.put(state, statesFreq.get(state) + 1);
 
         if (prevState.equals(state)) {
@@ -206,11 +216,33 @@ public class Simulator {
                 .append("\nITERATIONS: ").append(iterations)
                 .append("\nSTATES:");
 
+        boolean first = true;
+
         for (PetriNetState state : statesFreq.keySet()) {
+            int freqNum = statesFreq.get(state);
+            double stayTime = statesStayTime.get(state);
+            double retTime = statesReturnTime.get(state);
+
+            if (first) {
+                freqNum--;
+                first = false;
+            }
+
             sb.append("\n").append(state)
-                    .append('\t').append(statesFreq.get(state))
-                    .append('\t').append(statesStayTime.get(state))
-                    .append('\t').append(statesReturnTime.get(state));
+                    .append('\t').append(freqNum)
+                    .append('\t').append(String.format("%.3f", (double)freqNum / iterations * 100)).append("%")
+                    .append('\t').append(stayTime)
+                    .append('\t').append(String.format("%.3f", stayTime / iterations * 100)).append("%")
+                    .append('\t').append(retTime)
+                    .append('\t').append(String.format("%.3f", retTime / simTime * 100)).append("%");
+        }
+
+        sb.append("\nSTATES COME:");
+
+        for (Map.Entry<PetriNetState, PetriNetState> pair : statesComeFreq.keySet()) {
+            sb.append("\n").append(pair.getKey().toString()).append(" --- ")
+                    .append(String.format("%.3f", (double)statesComeFreq.get(pair) / (iterations - 1) * 100))
+                    .append("% --->").append(pair.getValue().toString());
         }
 
         System.out.println(sb.toString());
