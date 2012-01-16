@@ -15,11 +15,11 @@ import java.awt.image.BufferedImage;
  * Date: 12.12.11
  * Time: 17:12
  */
-public class TreeDialog extends JDialog {
+public class MarkDialog extends JDialog {
     private JMenuBar mainMenu = null;
     private JMenu fileMenu = null;
     private JMenuItem exportItem = null;
-    private TreeDrawingPanel drawingPanel = null;
+    private MDrawingPanel drawingPanel = null;
     private AttainabilityTree tree = new AttainabilityTree();
 
     private JMenuBar getMainMenu() {
@@ -50,9 +50,9 @@ public class TreeDialog extends JDialog {
         return exportItem;
     }
 
-    private TreeDrawingPanel getDrawingPanel() {
+    private MDrawingPanel getDrawingPanel() {
         if (drawingPanel == null) {
-            drawingPanel = new TreeDrawingPanel(tree.getRootNode());
+            drawingPanel = new MDrawingPanel(tree.getRootNode());
         }
         return drawingPanel;
     }
@@ -73,7 +73,7 @@ public class TreeDialog extends JDialog {
     }
 
 
-    public TreeDialog(Dimension size, PetriNet net) {
+    public MarkDialog(Dimension size, PetriNet net) {
         setSize(size);
         tree.build(net);
         this.add(getDrawingPanel());

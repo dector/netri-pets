@@ -3,7 +3,9 @@ package com.github.pmcompany.petri_net.model.util;
 import com.github.pmcompany.petri_net.model.PetriNet;
 import com.github.pmcompany.petri_net.model.Transition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * User: vitaliy
@@ -42,6 +44,7 @@ public class AttainabilityTree {
                     }
                     if (current.duplicates(node)) {
                         current.setType(AttainabilityTreeNodeType.DUPLICATE);
+                        current.setDuplicate(node);
                         current.setId(node.getId());
                         break;
                     }

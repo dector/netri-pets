@@ -31,6 +31,7 @@
 
 package com.github.pmcompany.petri_net.editor;
 
+import com.github.pmcompany.petri_net.editor.frames.MarkDialog;
 import com.github.pmcompany.petri_net.editor.frames.MatrixesDialog;
 import com.github.pmcompany.petri_net.editor.frames.TreeDialog;
 import com.github.pmcompany.petri_net.editor.panels.GridPanel;
@@ -261,5 +262,11 @@ public class EditorController {
                     "Not number value", JOptionPane.ERROR_MESSAGE);
         }
 
+    }
+
+    public void showMarkov() {
+        MarkDialog markDialog = new MarkDialog(new Dimension(400, 600), gridPanelsList.get(pane.getSelectedIndex()).getPetriNet());
+        markDialog.setModal(true);
+        markDialog.setVisible(true);
     }
 }

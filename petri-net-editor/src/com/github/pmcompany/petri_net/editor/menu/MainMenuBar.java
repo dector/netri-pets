@@ -34,7 +34,9 @@ package com.github.pmcompany.petri_net.editor.menu;
 import com.github.pmcompany.petri_net.editor.EditorController;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import static com.github.pmcompany.petri_net.common.UILabels.*;
 
@@ -164,7 +166,15 @@ public class MainMenuBar extends JMenuBar {
             }
         });
         menu.add(item);
-        
+
+        item = new JMenuItem("Markov's graph");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                EditorController.getInstance().showMarkov();
+            }
+        });
+        menu.add(item);
+
         add(menu);
     }
 }

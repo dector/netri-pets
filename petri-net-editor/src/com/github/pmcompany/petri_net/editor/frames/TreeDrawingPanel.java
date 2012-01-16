@@ -13,8 +13,8 @@ import java.util.LinkedList;
  */
 public class TreeDrawingPanel extends JPanel {
     public static final int CIRCLE_RADIUS = 10;
-    public static final int WIDTH = 500;
-    public static final int LEVEl_H = 30;
+    public static final int WIDTH = 700;
+    public static final int LEVEl_H = 50;
     private AttainabilityTreeNode root;
 
     public TreeDrawingPanel(AttainabilityTreeNode root) {
@@ -24,20 +24,24 @@ public class TreeDrawingPanel extends JPanel {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        this.paint(graphics);
+    }
+
+    public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
         g.setBackground(Color.white);
 
-        LinkedList<GraphicsNode> currentQueue = new LinkedList<GraphicsNode>();
-        LinkedList<GraphicsNode> childQueue = new LinkedList<GraphicsNode>();
-        currentQueue.add(new GraphicsNode(root, false, 0));
+        LinkedList<TreeGraphicsNode> currentQueue = new LinkedList<TreeGraphicsNode>();
+        LinkedList<TreeGraphicsNode> childQueue = new LinkedList<TreeGraphicsNode>();
+        currentQueue.add(new TreeGraphicsNode(root, false, 0));
         int level = 0;
         while (!currentQueue.isEmpty()) {
             int distance = WIDTH / (currentQueue.size() + 1);
-            childQueue = new LinkedList<GraphicsNode>();
+            childQueue = new LinkedList<TreeGraphicsNode>();
             level++;
             int i = 0;
             while (!currentQueue.isEmpty()) {
-                GraphicsNode currentNode = currentQueue.removeFirst();
+                TreeGraphicsNode currentNode = currentQueue.removeFirst();
                 Color c;
                 switch (currentNode.treeNode.getType()) {
                     case INTERNAL:
@@ -67,10 +71,10 @@ public class TreeDrawingPanel extends JPanel {
 
                     g.setColor(Color.black);
                     g.drawLine(x1, y1, x2, y2);
-                    g.drawString(currentNode.pathToThisLife(), x1 + (x2-x1)/2, y1 + (y2-y1)/2);
+                    g.drawString(currentNode.pathToThisLife(), x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2);
                 }
                 for (AttainabilityTreeNode chNode : currentNode.treeNode.getChildren()) {
-                    childQueue.add(new GraphicsNode(chNode, true, i * distance));
+                    childQueue.add(new TreeGraphicsNode(chNode, true, i * distance));
                 }
             }
             currentQueue = childQueue;
@@ -83,12 +87,12 @@ public class TreeDrawingPanel extends JPanel {
     }
 }
 
-class GraphicsNode {
+class TreeGraphicsNode {
     public AttainabilityTreeNode treeNode;
     public boolean hasParent;
     public int parrentOffset;
 
-    GraphicsNode(AttainabilityTreeNode treeNode, boolean hasParent, int parrentOffset) {
+    TreeGraphicsNode(AttainabilityTreeNode treeNode, boolean hasParent, int parrentOffset) {
         this.treeNode = treeNode;
         this.hasParent = hasParent;
         this.parrentOffset = parrentOffset;
