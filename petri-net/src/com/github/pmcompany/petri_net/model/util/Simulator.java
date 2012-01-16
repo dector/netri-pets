@@ -23,6 +23,7 @@ public class Simulator {
     private Map<Map.Entry<PetriNetState, PetriNetState>, Integer> statesComeFreq;
     private Map<PetriNetState, Integer> statesFreq;
     private Map<PetriNetState, Double> statesStayTime;
+    private Map<PetriNetState, Integer> statesReturnFreq;
     private Map<PetriNetState, Double> statesReturnTime;
     private Map<PetriNetState, Double> statesOutComeTime;
 
@@ -48,6 +49,7 @@ public class Simulator {
         statesComeFreq = new LinkedHashMap<Map.Entry<PetriNetState, PetriNetState>, Integer>();
         statesFreq = new LinkedHashMap<PetriNetState, Integer>();
         statesStayTime = new LinkedHashMap<PetriNetState, Double>();
+        statesReturnFreq = new LinkedHashMap<PetriNetState, Integer>();
         statesReturnTime = new LinkedHashMap<PetriNetState, Double>();
         statesOutComeTime = new LinkedHashMap<PetriNetState, Double>();
 
@@ -154,6 +156,7 @@ public class Simulator {
         if (! statesFreq.containsKey(state)) {
             statesFreq.put(state, 0);
             statesStayTime.put(state, 0d);
+            statesReturnFreq.put(state, 0);
             statesReturnTime.put(state, 0d);
             statesOutComeTime.put(state, simTime);
         }
@@ -175,6 +178,7 @@ public class Simulator {
 
             statesOutComeTime.put(prevState, simTime - trTime);
 
+            statesReturnFreq.put(state, statesReturnFreq.get(state) + 1);
             statesReturnTime.put(state, statesReturnTime.get(state) + simTime - statesOutComeTime.get(state));
             prevState = state;
         }
@@ -218,13 +222,30 @@ public class Simulator {
 
         boolean first = true;
 
+        sb.append("\n").append("State |")
+                .append('\t').append("Occur num |")
+                .append('\t').append("Occur probab |")
+                .append('\t').append("Sum stay time |")
+                .append('\t').append("Stay probab |")
+                .append('\t').append("Avg stay time |")
+                .append('\t').append("Return num |")
+                .append('\t').append("Sum return time |")
+                .append('\t').append("Return probab |")
+                .append('\t').append("Avg return time");
+
         for (PetriNetState state : statesFreq.keySet()) {
             int freqNum = statesFreq.get(state);
+            int freqRetNum = statesReturnFreq.get(state);
             double stayTime = statesStayTime.get(state);
             double retTime = statesReturnTime.get(state);
 
             if (first) {
                 freqNum--;
+
+                if (freqNum == 0) {
+                    freqNum = 1;
+                }
+
                 first = false;
             }
 
@@ -233,8 +254,11 @@ public class Simulator {
                     .append('\t').append(String.format("%.3f", (double)freqNum / iterations * 100)).append("%")
                     .append('\t').append(stayTime)
                     .append('\t').append(String.format("%.3f", stayTime / iterations * 100)).append("%")
+                    .append('\t').append(String.format("%.3f", stayTime / freqNum))
+                    .append('\t').append(freqRetNum)
                     .append('\t').append(retTime)
-                    .append('\t').append(String.format("%.3f", retTime / simTime * 100)).append("%");
+                    .append('\t').append(String.format("%.3f", retTime / simTime * 100)).append("%")
+                    .append('\t').append(String.format("%.3f", retTime / freqRetNum));
         }
 
         sb.append("\nSTATES COME:");
