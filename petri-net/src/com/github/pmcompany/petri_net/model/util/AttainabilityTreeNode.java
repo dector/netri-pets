@@ -15,6 +15,15 @@ public class AttainabilityTreeNode {
     private AttainabilityTreeNode parent;
     private Collection<AttainabilityTreeNode> children;
     private boolean[] infinities;
+    private AttainabilityTreeNode duplicate;
+
+    public AttainabilityTreeNode getDuplicate() {
+        return duplicate;
+    }
+
+    public void setDuplicate(AttainabilityTreeNode duplicate) {
+        this.duplicate = duplicate;
+    }
 
     private List<Transition> transitionVector;
     private int id;
